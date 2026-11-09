@@ -13,7 +13,6 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [activeRole, setActiveRole] = useState<string | null>(null);
-  const [avatarMode, setAvatarMode] = useState<"3d" | "photo">("3d");
 
   // Smooth mouse parallax physics
   const mouseX = useMotionValue(0);
@@ -106,22 +105,10 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
           ))}
         </div>
 
-        {/* Status / Availability & 3D Avatar Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            type="button"
-            onClick={() => setAvatarMode((prev) => (prev === "3d" ? "photo" : "3d"))}
-            className="px-2.5 sm:px-3 py-1 rounded-full border border-red-500/40 bg-red-950/40 hover:bg-red-900/60 backdrop-blur-md text-[9px] sm:text-[11px] font-mono tracking-wider font-medium text-red-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-[0_0_15px_rgba(220,38,38,0.25)] select-none pointer-events-auto"
-            title="Switch between 3D Hero Model and Real Photo"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block animate-pulse" />
-            <span>{avatarMode === "3d" ? "3D HERO MODEL" : "REAL PHOTO"}</span>
-          </button>
-
-          <div className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 hidden sm:flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-            AVAILABLE FOR HIRE • 2026
-          </div>
+        {/* Status / Availability */}
+        <div className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
+          AVAILABLE FOR HIRE • 2026
         </div>
       </div>
 
@@ -258,15 +245,15 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
             </div>
           </div>
 
-          {/* D. Foreground Cutout: Santhosh Raj Character (Z-20 Breaking plane) */}
+          {/* D. Foreground Cutout: Santhosh Raj 3D Hero Model (Z-20 Breaking plane) */}
           <motion.div
             style={{ x: characterX, y: characterY }}
             className="absolute bottom-[-15px] sm:bottom-[-20px] left-1/2 -translate-x-1/2 z-20 pointer-events-none w-[300px] sm:w-[440px] md:w-[520px] lg:w-[580px] max-w-[92vw] flex items-end justify-center"
           >
             <img
-              src={avatarMode === "3d" ? "/santhosh_hero.png" : "/santhosh_photo.png"}
-              alt="Santhosh Raj"
-              className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(220,38,38,0.25)] select-none pointer-events-none filter brightness-105 contrast-105 transition-all duration-300"
+              src="/santhosh_hero.png"
+              alt="Santhosh Raj 3D Hero Model"
+              className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(220,38,38,0.25)] select-none pointer-events-none filter brightness-105 contrast-105"
               loading="eager"
             />
           </motion.div>
