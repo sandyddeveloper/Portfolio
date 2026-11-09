@@ -1,0 +1,11 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="11" fill="#1e1035" stroke="#a855f7" stroke-width="1.2"/>
+  <path d="M12 3L18 12L12 21L6 12L12 3Z" fill="url(#agy-glow-grad)"/>
+  <circle cx="12" cy="12" r="2.8" fill="#ffffff"/>
+  <defs>
+    <linearGradient id="agy-glow-grad" x1="6" y1="3" x2="18" y2="21" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+</svg>

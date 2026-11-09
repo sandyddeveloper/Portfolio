@@ -1,0 +1,81 @@
+.glow-cursor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Replaces default system cursor across the main page container */
+.glow-cursor--no-system,
+.glow-cursor--no-system * {
+  cursor: none !important;
+}
+
+.glow-cursor__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 20;
+}
+
+.glow-cursor__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* High-precision glowing pointer dot replacing the default system cursor */
+.glow-cursor__dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0 10px 2px rgba(168, 85, 247, 0.95),
+    0 0 20px 4px rgba(139, 92, 246, 0.65);
+  pointer-events: none;
+  user-select: none;
+  z-index: 9999;
+  margin-top: -4px;
+  margin-left: -4px;
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease,
+              border 0.2s ease,
+              box-shadow 0.2s ease,
+              margin 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Interactive hover state when over buttons, links, or clickable targets */
+.glow-cursor__dot--hover {
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 16px 4px rgba(168, 85, 247, 0.8),
+    inset 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* On mobile / touch screens, restore native touch behavior and hide artificial pointer dot */
+@media (pointer: coarse) {
+  .glow-cursor__dot {
+    display: none !important;
+  }
+  .glow-cursor--no-system,
+  .glow-cursor--no-system * {
+    cursor: auto !important;
+  }
+}
+
