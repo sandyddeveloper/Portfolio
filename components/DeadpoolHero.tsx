@@ -210,11 +210,11 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
                 aria-hidden="true"
               />
 
-              {/* Right Wing: RAJ + [2026] (Bebas Neue condensed typography on right of Deadpool) */}
+              {/* Right Wing: RAJ + [2026] */}
               <div className="flex items-center justify-start pl-2 sm:pl-4 md:pl-6 min-w-0">
                 <div className="relative flex items-center gap-1.5 sm:gap-2.5">
                   <span className="font-bebas text-[clamp(1.8rem,5.2vw,6.5rem)] font-normal text-white drop-shadow-[0_15px_30px_rgba(0,0,0,0.95)] tracking-[0.04em] uppercase whitespace-nowrap text-left">
-                    DEVELOPER
+                    RAJ
                   </span>
                   <span className="text-[8px] sm:text-[10px] md:text-[11px] font-mono tracking-[0.25em] text-neutral-400 [writing-mode:vertical-lr] select-none opacity-80 pt-0.5">
                     [2026]
@@ -224,7 +224,7 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
             </div>
           </motion.div>
 
-          {/* C. Horizontal Perforated Cinema Film Strip Track (Behind Deadpool) */}
+          {/* C. Horizontal Perforated Cinema Film Strip Track (Behind Character) */}
           <div className="absolute top-[68%] sm:top-[66%] left-0 right-0 z-[15] pointer-events-none -translate-y-1/2 w-full overflow-hidden">
             <div className="relative w-full h-8 sm:h-12 bg-[#0c0c10]/95 border-y border-white/10 backdrop-blur-md flex flex-col justify-between py-1 shadow-[0_4px_25px_rgba(0,0,0,0.8)]">
               {/* Top Film Sprocket Perforations */}
@@ -258,15 +258,15 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
             </div>
           </div>
 
-          {/* D. Foreground Cutout: DEADPOOL with Crossed Arms (Z-20 Breaking plane) */}
+          {/* D. Foreground Cutout: Santhosh Raj Character (Z-20 Breaking plane) */}
           <motion.div
             style={{ x: characterX, y: characterY }}
-            className="absolute bottom-[-15px] sm:bottom-[-20px] left-1/2 -translate-x-1/2 z-20 pointer-events-none w-[310px] sm:w-[460px] md:w-[540px] lg:w-[620px] flex items-end justify-center"
+            className="absolute bottom-[-15px] sm:bottom-[-20px] left-1/2 -translate-x-1/2 z-20 pointer-events-none w-[300px] sm:w-[440px] md:w-[520px] lg:w-[580px] max-w-[92vw] flex items-end justify-center"
           >
             <img
-              src="/deadpool_crossed.png"
-              alt="Deadpool with arms crossed"
-              className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(220,38,38,0.25)] select-none pointer-events-none filter brightness-105 contrast-105"
+              src={avatarMode === "3d" ? "/santhosh_hero.png" : "/santhosh_photo.png"}
+              alt="Santhosh Raj"
+              className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(220,38,38,0.25)] select-none pointer-events-none filter brightness-105 contrast-105 transition-all duration-300"
               loading="eager"
             />
           </motion.div>
