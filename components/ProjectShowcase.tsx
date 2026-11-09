@@ -123,7 +123,7 @@ export function ProjectShowcase() {
             </p>
 
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight">
-              Things I've built<span className="text-neutral-500">.</span>
+              Things I&apos;ve built<span className="text-neutral-500">.</span>
             </h2>
           </div>
 

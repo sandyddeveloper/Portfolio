@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { GlowCursor } from "./GlowCursor";
 import { GooeyNav, GooeyNavItem } from "./GooeyNav";
 import { ContactSidebar } from "./ContactSidebar";

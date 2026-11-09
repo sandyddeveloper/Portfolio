@@ -766,8 +766,18 @@ export function PaperPlaneContact({
                   onClick={handleEditAndResend}
                   className="flex-1 py-2.5 px-4 rounded-xl bg-[#18181b] hover:bg-[#27272a] text-neutral-300 hover:text-white border border-white/10 text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center"
                 >
-                  Edit and resend
+                  Edit & resend
                 </button>
+
+                {onClose && (
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border border-white/10 text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center"
+                  >
+                    Done
+                  </button>
+                )}
               </div>
             </motion.div>
           )}

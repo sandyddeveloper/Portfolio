@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { Play, ChevronRight, X } from "lucide-react";
 
 interface DeadpoolHeroProps {
   onBookNow?: () => void;
@@ -11,7 +10,6 @@ interface DeadpoolHeroProps {
 
 export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [activeRole, setActiveRole] = useState<string | null>(null);
 
   // Smooth mouse parallax physics
@@ -106,10 +104,15 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
         </div>
 
         {/* Status / Availability */}
-        <div className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={onBookNow}
+          className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 hover:text-white flex items-center gap-2 cursor-pointer transition-colors"
+          title="Open contact & hire sidebar"
+        >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
           AVAILABLE FOR HIRE • 2026
-        </div>
+        </button>
       </div>
 
       {/* =========================================================================
@@ -117,23 +120,28 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
              - Roman Numeral III on Top
              - Cast Row across
              - Glowing Red Circle Target with Reticle
-             - Giant "DEADPOOL" Typography (Behind character)
+             - Giant "SANTHOSH RAJ" Typography (Behind character)
              - Horizontal Perforated Cinema Film Strip
-             - Cutout Deadpool with Crossed Arms (In Front)
+             - Cutout 3D Hero Model with Crossed Arms (In Front)
          ========================================================================= */}
       <div className="relative z-20 w-full max-w-7xl mx-auto flex-1 flex flex-col items-center justify-center py-2 sm:py-6">
         {/* Roman Numeral III & Reticle Header */}
-        <div className="relative z-10 flex flex-col items-center justify-center mb-1 sm:mb-2">
+        <button
+          type="button"
+          onClick={onExplore}
+          className="relative z-10 flex flex-col items-center justify-center mb-1 sm:mb-2 cursor-pointer group"
+          title="Explore sections"
+        >
           {/* Subtle vertical camera guideline */}
-          <div className="w-[1px] h-6 sm:h-8 bg-gradient-to-b from-white/30 to-red-500/80 mb-1" />
+          <div className="w-[1px] h-6 sm:h-8 bg-gradient-to-b from-white/30 to-red-500/80 mb-1 group-hover:h-10 transition-all duration-300" />
 
           {/* Roman Numeral III */}
-          <div className="flex items-center gap-1.5 px-3 py-0.5 rounded border border-white/10 bg-black/60 backdrop-blur-sm">
+          <div className="flex items-center gap-1.5 px-3 py-0.5 rounded border border-white/10 bg-black/60 backdrop-blur-sm group-hover:border-red-500/50 transition-colors">
             <span className="w-1 h-3.5 sm:h-4 bg-white inline-block" />
             <span className="w-1 h-3.5 sm:h-4 bg-white inline-block" />
             <span className="w-1 h-3.5 sm:h-4 bg-white inline-block" />
           </div>
-        </div>
+        </button>
 
         {/* Developer Roles Row Across the Top of the Title */}
         <div className="relative z-20 w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center px-4 mb-1 sm:mb-2">
