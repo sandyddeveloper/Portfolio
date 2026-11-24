@@ -19,8 +19,9 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "SanthoshRajK | Portfolio",
-  description: "Personal portfolio of SanthoshRajK - Software Engineer, Full Stack Developer, and Creative Coder.",
+  title: "Santhosh Raj | Full Stack & Backend Developer",
+  description:
+    "Portfolio of Santhosh Raj — Full Stack & Backend Developer specializing in Python, Next.js, FastAPI, PostgreSQL, and clean web applications.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

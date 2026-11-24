@@ -311,7 +311,7 @@ export function PaperPlaneContact({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-[280px] h-[210px] bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-4 border border-neutral-200 overflow-hidden"
+              className="relative w-[min(280px,calc(100vw-40px))] h-[210px] bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-3.5 sm:p-4 border border-neutral-200 overflow-hidden"
             >
               {/* Single clean dashed border inset around perimeter (NO crosshairs) */}
               <div className="absolute inset-2.5 border border-dashed border-neutral-300 rounded-lg pointer-events-none" />
@@ -395,7 +395,7 @@ export function PaperPlaneContact({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4 }}
-              className="relative w-[280px] h-[210px] flex items-center justify-center filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.55)]"
+              className="relative w-[min(280px,calc(100vw-40px))] h-[210px] flex items-center justify-center filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.55)]"
             >
               <svg width="280" height="210" viewBox="0 0 280 210">
                 {/* 1. Bottom Sheet Body (Clean rectangle with dashed border and user note) */}
@@ -468,7 +468,7 @@ export function PaperPlaneContact({
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.45 }}
               style={{ perspective: 1000 }}
-              className="relative w-[280px] h-[210px] flex items-center justify-center filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.65)]"
+              className="relative w-[min(280px,calc(100vw-40px))] h-[210px] flex items-center justify-center filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.65)]"
             >
               <svg width="220" height="200" viewBox="0 0 220 200">
                 {/* Left Wing (Direct light white) */}
@@ -748,7 +748,7 @@ export function PaperPlaneContact({
 
               {/* Explanatory receipt text */}
               <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-5">
-                He reads every note himself, usually within a day, and replies from his own inbox. Keep an eye on your email.
+                I read every note myself and usually reply within 24 hours. Keep an eye on your email inbox!
               </p>
 
               {/* Action Buttons: Write another & Edit and resend */}

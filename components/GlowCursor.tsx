@@ -1,7 +1,19 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import '../styles/GlowCursor.css';
+
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
+const subscribeCoarse = (callback: () => void) => {
+  if (typeof window === 'undefined') return () => {};
+  const mq = window.matchMedia('(pointer: coarse)');
+  mq.addEventListener('change', callback);
+  return () => mq.removeEventListener('change', callback);
+};
+
+const getCoarseSnapshot = () => (typeof window !== 'undefined' ? window.matchMedia('(pointer: coarse)').matches : false);
+const getCoarseServerSnapshot = () => false;
 
 const VERTEX = `#version 300 es
 in vec2 aPosition;
@@ -415,23 +427,26 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
     visible: false,
   });
   const [isHovering, setIsHovering] = useState(false);
+  const isTouchDevice = useSyncExternalStore(subscribeCoarse, getCoarseSnapshot, getCoarseServerSnapshot);
 
-  settingsRef.current = {
-    color: String(color),
-    secondaryColor: secondaryColor ? String(secondaryColor) : '',
-    intensity: Math.max(0, intensity),
-    trailWidth: clamp(trailWidth, 0.5, 40),
-    linger: clamp(linger, 0.1, 10),
-    glow: Math.max(0, glow),
-    hotspot: Math.max(0, hotspot),
-    followSpeed: clamp(followSpeed, 0, 1),
-    grain: Math.max(0, grain),
-    clickBurst,
-    quality: QUALITY[quality] ? quality : 'high',
-    theme,
-    maxDevicePixelRatio,
-    enabled
-  };
+  useIsomorphicLayoutEffect(() => {
+    settingsRef.current = {
+      color: String(color),
+      secondaryColor: secondaryColor ? String(secondaryColor) : '',
+      intensity: Math.max(0, intensity),
+      trailWidth: clamp(trailWidth, 0.5, 40),
+      linger: clamp(linger, 0.1, 10),
+      glow: Math.max(0, glow),
+      hotspot: Math.max(0, hotspot),
+      followSpeed: clamp(followSpeed, 0, 1),
+      grain: Math.max(0, grain),
+      clickBurst,
+      quality: QUALITY[quality] ? quality : 'high',
+      theme,
+      maxDevicePixelRatio,
+      enabled
+    };
+  });
 
   useEffect(() => {
     const container = containerRef.current;
@@ -693,7 +708,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 
-    const use = (pass: Pass, texel: [number, number]): Record<string, WebGLUniformLocation | null> => {
+    const bindPass = (pass: Pass, texel: [number, number]): Record<string, WebGLUniformLocation | null> => {
       gl.useProgram(pass.program);
       if (pass.uniforms.uTexel) gl.uniform2f(pass.uniforms.uTexel, texel[0], texel[1]);
       return pass.uniforms;
@@ -717,7 +732,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       strength: number,
       wide: number = radius
     ) => {
-      const u = use(validPasses.splat, pair.read.texel);
+      const u = bindPass(validPasses.splat, pair.read.texel);
       gl.uniform1i(u.uTarget, bind(0, pair.read));
       gl.uniform1f(u.uAspect, state.width / state.height);
       gl.uniform2f(u.uA, ax / state.width, 1 - ay / state.height);
@@ -814,17 +829,17 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       if (!state.targets) return;
       const { velocity, dye, pressure, divergence } = state.targets;
       if (!reduce) {
-        let u = use(validPasses.divergence, velocity.read.texel);
+        let u = bindPass(validPasses.divergence, velocity.read.texel);
         gl.uniform1i(u.uVelocity, bind(0, velocity.read));
         draw(divergence);
 
-        u = use(validPasses.scale, pressure.read.texel);
+        u = bindPass(validPasses.scale, pressure.read.texel);
         gl.uniform1i(u.uSource, bind(0, pressure.read));
         gl.uniform1f(u.uValue, 0.8);
         draw(pressure.write);
         pressure.swap();
 
-        u = use(validPasses.pressure, pressure.read.texel);
+        u = bindPass(validPasses.pressure, pressure.read.texel);
         gl.uniform1i(u.uDivergence, bind(1, divergence));
         for (let i = 0; i < PRESSURE_STEPS; i++) {
           gl.uniform1i(u.uPressure, bind(0, pressure.read));
@@ -832,13 +847,13 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
           pressure.swap();
         }
 
-        u = use(validPasses.gradient, velocity.read.texel);
+        u = bindPass(validPasses.gradient, velocity.read.texel);
         gl.uniform1i(u.uPressure, bind(0, pressure.read));
         gl.uniform1i(u.uVelocity, bind(1, velocity.read));
         draw(velocity.write);
         velocity.swap();
 
-        u = use(validPasses.advect, velocity.read.texel);
+        u = bindPass(validPasses.advect, velocity.read.texel);
         gl.uniform2f(u.uVelocityTexel, velocity.read.texel[0], velocity.read.texel[1]);
         gl.uniform1i(u.uVelocity, bind(0, velocity.read));
         gl.uniform1i(u.uSource, bind(0, velocity.read));
@@ -857,7 +872,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       ];
       const { forward, back } = state.targets;
       if (reduce) {
-        const u = use(validPasses.advect, dye.read.texel);
+        const u = bindPass(validPasses.advect, dye.read.texel);
         gl.uniform2f(u.uVelocityTexel, velocity.read.texel[0], velocity.read.texel[1]);
         gl.uniform1i(u.uVelocity, bind(0, velocity.read));
         gl.uniform1i(u.uSource, bind(1, dye.read));
@@ -867,7 +882,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
         dye.swap();
         return;
       }
-      let u = use(validPasses.advect, dye.read.texel);
+      let u = bindPass(validPasses.advect, dye.read.texel);
       gl.uniform2f(u.uVelocityTexel, velocity.read.texel[0], velocity.read.texel[1]);
       gl.uniform1i(u.uVelocity, bind(0, velocity.read));
       gl.uniform1i(u.uSource, bind(1, dye.read));
@@ -877,7 +892,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       gl.uniform1i(u.uSource, bind(1, forward));
       gl.uniform1f(u.uDt, -dt);
       draw(back);
-      u = use(validPasses.maccormack, dye.read.texel);
+      u = bindPass(validPasses.maccormack, dye.read.texel);
       gl.uniform2f(u.uVelocityTexel, velocity.read.texel[0], velocity.read.texel[1]);
       gl.uniform2f(u.uSourceTexel, dye.read.texel[0], dye.read.texel[1]);
       gl.uniform1i(u.uVelocity, bind(0, velocity.read));
@@ -901,12 +916,12 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       if (!state.targets) return;
       const { dye, bloom } = state.targets;
       if (s.glow > 0) {
-        let u = use(validPasses.prefilter, bloom[0].texel);
+        let u = bindPass(validPasses.prefilter, bloom[0].texel);
         gl.uniform1i(u.uDye, bind(0, dye.read));
         gl.uniform2f(u.uDyeTexel, dye.read.texel[0], dye.read.texel[1]);
         setShade(u, s);
         draw(bloom[0]);
-        u = use(validPasses.down, bloom[0].texel);
+        u = bindPass(validPasses.down, bloom[0].texel);
         for (let i = 1; i < bloom.length; i++) {
           gl.uniform1i(u.uSource, bind(0, bloom[i - 1]));
           gl.uniform2f(u.uSourceTexel, bloom[i - 1].texel[0], bloom[i - 1].texel[1]);
@@ -914,7 +929,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
         }
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.ONE, gl.ONE);
-        u = use(validPasses.up, bloom[0].texel);
+        u = bindPass(validPasses.up, bloom[0].texel);
         for (let i = bloom.length - 1; i > 0; i--) {
           gl.uniform1i(u.uSource, bind(0, bloom[i]));
           gl.uniform2f(u.uSourceTexel, bloom[i].texel[0], bloom[i].texel[1]);
@@ -922,7 +937,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
         }
         gl.disable(gl.BLEND);
       }
-      const u = use(validPasses.display, [1 / canvas.width, 1 / canvas.height]);
+      const u = bindPass(validPasses.display, [1 / canvas.width, 1 / canvas.height]);
       gl.uniform1i(u.uDye, bind(0, dye.read));
       gl.uniform1i(u.uBloom, bind(1, bloom[0]));
       setShade(u, s);
@@ -982,6 +997,11 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') {
+        setCursorPos((p) => (p.visible ? { ...p, visible: false } : p));
+        return;
+      }
+
       const rect = container.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -1092,7 +1112,7 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`glow-cursor ${replaceSystemCursor ? 'glow-cursor--no-system' : ''}${className ? ` ${className}` : ''}`}
+      className={`glow-cursor ${replaceSystemCursor && !isTouchDevice ? 'glow-cursor--no-system' : ''}${className ? ` ${className}` : ''}`}
       style={style}
       {...rest}
     >
@@ -1104,8 +1124,8 @@ export const GlowCursor: React.FC<GlowCursorProps> = ({
       />
       {children && <div className="glow-cursor__content">{children}</div>}
 
-      {/* High-Precision glowing pointer dot replacing the system cursor */}
-      {replaceSystemCursor && showCursorDot && cursorPos.visible && (
+      {/* High-Precision glowing pointer dot replacing the system cursor on desktop */}
+      {!isTouchDevice && replaceSystemCursor && showCursorDot && cursorPos.visible && (
         <div
           className={`glow-cursor__dot pointer-events-none ${isHovering ? 'glow-cursor__dot--hover' : ''}`}
           style={{

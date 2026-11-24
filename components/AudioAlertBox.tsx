@@ -17,7 +17,7 @@ export function AudioAlertBox({ onSelect, className }: AudioAlertBoxProps) {
       exit={{ y: -70, opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-50 select-none",
+        "fixed top-14 sm:top-6 left-1/2 -translate-x-1/2 z-50 select-none max-w-[calc(100vw-20px)]",
         "flex flex-col items-center pointer-events-auto",
         className
       )}
@@ -25,9 +25,9 @@ export function AudioAlertBox({ onSelect, className }: AudioAlertBoxProps) {
       {/* 1. Main Alert Pill Box with SOUND ON / MUTE buttons */}
       <div
         className={cn(
-          "flex items-center gap-3 sm:gap-4 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full",
-          "bg-black/90 backdrop-blur-xl border border-violet-500/40",
-          "shadow-[0_0_30px_rgba(139,92,246,0.35),inset_0_0_12px_rgba(139,92,246,0.12)]"
+          "flex items-center gap-2 sm:gap-4 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full",
+          "bg-black/95 backdrop-blur-xl border border-violet-500/40",
+          "shadow-[0_0_30px_rgba(139,92,246,0.35),inset_0_0_12px_rgba(139,92,246,0.12)] max-w-full"
         )}
       >
         {/* Equalizer animation indicator */}
@@ -121,7 +121,7 @@ export function AudioAlertBox({ onSelect, className }: AudioAlertBoxProps) {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-400 shadow-[0_0_6px_rgba(167,139,250,1)]" />
           </span>
           <span className="text-[11px] sm:text-[12px] font-mono tracking-wider text-violet-200 uppercase whitespace-nowrap">
-            Please click to start the experience
+            Click to enter the portfolio
           </span>
         </motion.div>
       </div>

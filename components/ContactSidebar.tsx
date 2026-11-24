@@ -58,7 +58,7 @@ export function ContactSidebar({ isOpen, onClose }: ContactSidebarProps) {
               "relative z-10 w-full max-w-xl h-full overflow-y-auto",
               "bg-[#09090d]/95 backdrop-blur-2xl border-l border-white/[0.08]",
               "shadow-[-20px_0_60px_rgba(0,0,0,0.85)]",
-              "flex flex-col justify-between p-6 sm:p-8"
+              "flex flex-col justify-between p-4 sm:p-8"
             )}
             role="dialog"
             aria-modal="true"
@@ -68,7 +68,7 @@ export function ContactSidebar({ isOpen, onClose }: ContactSidebarProps) {
             <div>
               <div className="flex items-start justify-between gap-4 mb-2.5">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
-                  Let&apos;s Build Together
+                  Let&apos;s Connect
                 </h2>
                 <button
                   type="button"
@@ -91,7 +91,7 @@ export function ContactSidebar({ isOpen, onClose }: ContactSidebarProps) {
                 </button>
               </div>
               <p className="text-neutral-400 text-sm leading-relaxed mb-4">
-                Have an open role, ambitious project, or creative tech idea? Type your message below and watch it fly directly to my desk.
+                Have an open role, an interesting project, or just want to chat about engineering? Drop a note below and I&apos;ll get right back to you.
               </p>
             </div>
 
@@ -105,8 +105,8 @@ export function ContactSidebar({ isOpen, onClose }: ContactSidebarProps) {
 
             {/* Bottom minimal note */}
             <div className="pt-4 text-center">
-              <span className="text-[11px] font-mono text-neutral-600 tracking-wider">
-                DIRECT DESK DISPATCH • REPLIES WITHIN 24 HOURS
+              <span className="text-[11px] font-mono text-neutral-500 tracking-wider">
+                DIRECT INBOX • TYPICALLY REPLIES WITHIN 24 HOURS
               </span>
             </div>
           </motion.aside>

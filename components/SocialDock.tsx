@@ -138,7 +138,7 @@ export function SocialDock({
         pointerEvents: isPastFooter ? "none" : "auto",
       }}
       className={cn(
-        "fixed z-40 select-none",
+        "fixed z-40 select-none hidden md:block",
         position === "bottom-left" && (footerOffset > 0 ? "left-2.5 sm:left-7" : "left-2.5 sm:left-7 bottom-4 sm:bottom-8"),
         position === "left" && "left-2.5 sm:left-7 top-1/2 -translate-y-1/2",
         position === "right" && "right-2.5 sm:right-7 top-1/2 -translate-y-1/2",

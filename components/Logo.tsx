@@ -16,7 +16,7 @@ export function Logo({ className }: LogoProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
-        "fixed top-6 left-8 sm:top-8 sm:left-10 z-50 select-none flex items-center p-2",
+        "fixed top-3.5 left-3.5 sm:top-8 sm:left-10 z-50 select-none flex items-center p-1.5 sm:p-2",
         className
       )}
     >
@@ -26,7 +26,7 @@ export function Logo({ className }: LogoProps) {
         aria-label="SanthoshRajK Home"
       >
         {/* Main Logo Text */}
-        <span className="font-bold text-xl sm:text-2xl tracking-tight font-sans text-[#000000]">
+        <span className="font-bold text-lg sm:text-2xl tracking-tight font-sans text-[#000000]">
           SanthoshRajK
         </span>
       </Link>

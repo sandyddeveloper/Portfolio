@@ -73,7 +73,7 @@ export function AudioVisualizer({
     <div
       onClick={onToggleSound}
       className={cn(
-        "fixed top-6 right-8 sm:top-8 sm:right-10 z-50 select-none flex items-center justify-center p-2 rounded-full cursor-pointer transition-all hover:scale-105 active:scale-95 group",
+        "fixed top-3.5 right-3.5 sm:top-8 sm:right-10 z-50 select-none flex items-center justify-center p-1.5 sm:p-2 rounded-full cursor-pointer transition-all hover:scale-105 active:scale-95 group",
         className
       )}
       title={soundEnabled ? "Sound ON (Click to mute)" : "Sound MUTED (Click to enable)"}

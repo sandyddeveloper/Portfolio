@@ -103,20 +103,40 @@ export function TechStackGrid() {
       </div>
 
       {/* 
-        INVERTED PYRAMID WEDGE CONTAINER
-        Row 1: 12 cards (Languages & Frontend)
-        Row 2: 10 cards (Backend, Data & APIs)
-        Row 3: 8 cards (Databases & DevOps)
-        Row 4: 6 cards (AI & Automation)
-        Row 5: 4 cards (Dev Tools & IDEs)
-        Row 6: 2 cards (Deployment & CI/CD)
+        INVERTED PYRAMID WEDGE CONTAINER (DESKTOP) & TOUCH-FRIENDLY GRID (MOBILE)
       */}
-      <div className="relative z-10 w-full overflow-x-auto sm:overflow-visible py-2 sm:py-4 px-1 sm:px-2 no-scrollbar">
-        <div className="w-full max-w-6xl mx-auto flex flex-col items-center gap-1.5 xs:gap-2 sm:gap-3.5 md:gap-4">
+      <div className="relative z-10 w-full py-2 sm:py-4 px-1 sm:px-2">
+        {/* Mobile Responsive Touch Grid (Under md) */}
+        <div className="md:hidden w-full max-w-xl mx-auto px-2">
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-2.5">
+            {TECH_ROWS.flat().map((tech) => (
+              <motion.div
+                key={tech.name}
+                whileTap={{ scale: 0.94 }}
+                className="group relative flex flex-col items-center justify-center p-2 rounded-xl bg-[#0d0d14]/85 border border-white/[0.08] backdrop-blur-xl shadow-md hover:border-red-500/50 transition-colors"
+              >
+                <div className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center">
+                  <img
+                    src={tech.iconSrc}
+                    alt={tech.name}
+                    className="w-full h-full object-contain pointer-events-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
+                    loading="lazy"
+                  />
+                </div>
+                <span className="text-[10px] font-sans font-medium text-neutral-300 tracking-tight mt-1 truncate max-w-full text-center">
+                  {tech.name}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Inverted Pyramid Wedge (md and above) */}
+        <div className="hidden md:flex w-full max-w-6xl mx-auto flex-col items-center gap-3.5 md:gap-4">
           {TECH_ROWS.map((row, rowIndex) => (
             <div
               key={rowIndex}
-              className="flex items-center justify-center gap-1 min-[360px]:gap-1.5 sm:gap-2.5 md:gap-3 lg:gap-3.5 flex-nowrap"
+              className="flex items-center justify-center gap-2.5 md:gap-3 lg:gap-3.5 flex-nowrap"
             >
               {row.map((tech) => {
                 const isHovered = hoveredTech === tech.name;
@@ -135,8 +155,8 @@ export function TechStackGrid() {
                     }}
                     className={cn(
                       "group relative flex flex-col items-center justify-center cursor-pointer select-none",
-                      "w-[24px] h-[24px] min-[360px]:w-[26px] min-[360px]:h-[26px] xs:w-8 xs:h-8 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] lg:w-[82px] lg:h-[82px]",
-                      "rounded-md sm:rounded-2xl",
+                      "w-16 h-16 md:w-[72px] md:h-[72px] lg:w-[82px] lg:h-[82px]",
+                      "rounded-2xl",
                       "bg-[#0d0d14]/80 border border-white/[0.08] backdrop-blur-xl",
                       "shadow-[0_4px_20px_rgba(0,0,0,0.6)]",
                       "transition-all duration-300",
@@ -146,10 +166,10 @@ export function TechStackGrid() {
                     )}
                   >
                     {/* Subtle Inner Glass Reflection */}
-                    <div className="absolute inset-0 rounded-md sm:rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
 
                     {/* Real Logo Image */}
-                    <div className="relative z-10 w-3 h-3 min-[360px]:w-3.5 min-[360px]:h-3.5 xs:w-4 xs:h-4 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center">
+                    <div className="relative z-10 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center">
                       <img
                         src={tech.iconSrc}
                         alt={tech.name}
@@ -158,10 +178,10 @@ export function TechStackGrid() {
                       />
                     </div>
 
-                    {/* Name Label (Compact on mobile) */}
+                    {/* Name Label */}
                     <span
                       className={cn(
-                        "relative z-10 text-[5px] xs:text-[6px] sm:text-[9.5px] md:text-[10px] lg:text-[10.5px] font-sans font-medium tracking-tight mt-0.5 sm:mt-1.5 transition-colors duration-200 truncate max-w-[22px] xs:max-w-[30px] sm:max-w-[54px] md:max-w-[66px] text-center hidden min-[360px]:block",
+                        "relative z-10 text-[9.5px] md:text-[10px] lg:text-[10.5px] font-sans font-medium tracking-tight mt-1.5 transition-colors duration-200 truncate max-w-[54px] md:max-w-[66px] text-center",
                         isHovered ? "text-white font-semibold" : "text-neutral-400"
                       )}
                     >

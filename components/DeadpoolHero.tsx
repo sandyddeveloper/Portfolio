@@ -11,6 +11,7 @@ interface DeadpoolHeroProps {
 export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeRole, setActiveRole] = useState<string | null>(null);
+  const currentYear = new Date().getFullYear();
 
   // Smooth mouse parallax physics
   const mouseX = useMotionValue(0);
@@ -90,28 +91,31 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
       {/* =========================================================================
           SUB-HEADER META ROW: BADGES (LEFT) & RELEASE DATE (RIGHT)
          ========================================================================= */}
-      <div className="relative z-30 w-full max-w-7xl mx-auto flex items-center justify-between pt-1 sm:pt-2">
+      <div className="relative z-40 w-full max-w-7xl mx-auto flex items-center justify-between pt-1 sm:pt-2 px-1 sm:px-0">
         {/* Category Badges */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {["BACKEND", "PYTHON", "FULL STACK"].map((badge) => (
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {["BACKEND", "FULL STACK"].map((badge) => (
             <span
               key={badge}
-              className="px-2.5 sm:px-3 py-0.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[9px] sm:text-[11px] font-mono tracking-wider font-medium text-neutral-300 hover:border-red-500/60 hover:text-white transition-colors"
+              className="px-2 sm:px-3 py-0.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[9px] sm:text-[11px] font-mono tracking-wider font-medium text-neutral-300 hover:border-red-500/60 hover:text-white transition-colors"
             >
               {badge}
             </span>
           ))}
+          <span className="hidden min-[480px]:inline px-2.5 sm:px-3 py-0.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[9px] sm:text-[11px] font-mono tracking-wider font-medium text-neutral-300">
+            PYTHON
+          </span>
         </div>
 
         {/* Status / Availability */}
         <button
           type="button"
           onClick={onBookNow}
-          className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-neutral-400 hover:text-white flex items-center gap-2 cursor-pointer transition-colors"
+          className="text-[9px] sm:text-xs font-mono tracking-[0.14em] sm:tracking-[0.2em] uppercase text-neutral-400 hover:text-white flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-colors whitespace-nowrap"
           title="Open contact & hire sidebar"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
-          AVAILABLE FOR HIRE • 2026
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse shrink-0" />
+          <span className="hidden min-[380px]:inline">AVAILABLE FOR HIRE • </span>{currentYear}
         </button>
       </div>
 
@@ -144,7 +148,7 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
         </button>
 
         {/* Developer Roles Row Across the Top of the Title */}
-        <div className="relative z-20 w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center px-4 mb-1 sm:mb-2">
+        <div className="relative z-20 w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-4 text-center px-2 sm:px-4 mb-1 sm:mb-2">
           {PORTFOLIO_ROLES.map((role) => (
             <div
               key={role.title}
@@ -189,30 +193,30 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
           {/* B. Giant Typography - Split into Left Wing, Center Corridor, and Right Wing */}
           <motion.div
             style={{ x: textX, y: textY }}
-            className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 select-none pointer-events-none"
+            className="relative z-30 w-full max-w-7xl mx-auto px-4 sm:px-8 select-none pointer-events-none"
           >
             <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center leading-none text-white">
               {/* Left Wing: SANTHOSH (Bebas Neue condensed typography) */}
               <div className="flex items-center justify-end pr-2 sm:pr-4 md:pr-6 min-w-0">
-                <span className="font-bebas text-[clamp(1.8rem,5.2vw,6.5rem)] font-normal text-white drop-shadow-[0_15px_30px_rgba(0,0,0,0.95)] tracking-[0.02em] uppercase whitespace-nowrap text-right">
+                <span className="font-bebas text-[clamp(2rem,5.6vw,6.8rem)] font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.98)] drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] tracking-[0.02em] uppercase whitespace-nowrap text-right">
                   SANTHOSH
                 </span>
               </div>
 
-              {/* Center Corridor for Deadpool: Perfectly sized to clear his head, neck and crossed arms */}
+              {/* Center Corridor: Sized so face, chin, neck, and center hoodie chest remain completely open */}
               <div
-                className="w-[100px] min-[400px]:w-[130px] sm:w-[170px] md:w-[210px] lg:w-[240px] shrink-0"
+                className="w-[100px] min-[400px]:w-[140px] sm:w-[190px] md:w-[230px] lg:w-[260px] shrink-0"
                 aria-hidden="true"
               />
 
-              {/* Right Wing: RAJ + [2026] */}
+              {/* Right Wing: RAJ + Dynamic Year */}
               <div className="flex items-center justify-start pl-2 sm:pl-4 md:pl-6 min-w-0">
                 <div className="relative flex items-center gap-1.5 sm:gap-2.5">
-                  <span className="font-bebas text-[clamp(1.8rem,5.2vw,6.5rem)] font-normal text-white drop-shadow-[0_15px_30px_rgba(0,0,0,0.95)] tracking-[0.04em] uppercase whitespace-nowrap text-left">
-                    RAJ
+                  <span className="font-bebas text-[clamp(2rem,5.6vw,6.8rem)] font-normal text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.98)] drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)] tracking-[0.08em] sm:tracking-[0.14em] uppercase whitespace-nowrap text-left">
+                    RAJ K
                   </span>
                   <span className="text-[8px] sm:text-[10px] md:text-[11px] font-mono tracking-[0.25em] text-neutral-400 [writing-mode:vertical-lr] select-none opacity-80 pt-0.5">
-                    [2026]
+                    [{currentYear}]
                   </span>
                 </div>
               </div>
@@ -233,12 +237,13 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
               </div>
 
               {/* Center Subtle Film Frame Markers - Developer Portfolio Context */}
-              <div className="w-full flex items-center justify-between px-4 text-[7px] sm:text-[8px] font-mono tracking-[0.4em] text-white/40 uppercase">
-                <span>PYTHON 3.12 • FASTAPI</span>
+              <div className="w-full flex items-center justify-between px-3 sm:px-4 text-[6.5px] sm:text-[8px] font-mono tracking-[0.2em] sm:tracking-[0.4em] text-white/50 uppercase">
+                <span>PYTHON 3.12</span>
+                <span className="hidden min-[400px]:inline">FASTAPI</span>
                 <span className="hidden sm:inline">POSTGRESQL • REDIS • DOCKER</span>
-                <span>BUILD 03 • PRODUCTION ENGINE</span>
-                <span className="hidden md:inline">LATENCY &lt; 15MS • 60.00 FPS</span>
-                <span className="text-red-500/90 font-bold">LIVE ●</span>
+                <span>CLEAN CODE</span>
+                <span className="hidden md:inline">NEXT.JS • TYPESCRIPT</span>
+                <span className="text-red-500 font-bold">ACTIVE ●</span>
               </div>
 
               {/* Bottom Film Sprocket Perforations */}

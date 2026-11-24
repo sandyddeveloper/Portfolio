@@ -12,27 +12,27 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
   const cards = [
     {
       id: "architecture",
-      category: "ARCHITECTURE",
+      category: "CORE FOCUS",
       title: "Backend & Systems",
-      detail: "Django | Redis | PostgreSQL | Docker",
+      detail: "FastAPI | Django | Redis | PostgreSQL",
       image: "/about/backend.jpg",
       alt: "Backend server hardware and architecture rack",
     },
     {
       id: "focus",
-      category: "CRAFT & FOCUS",
-      title: "Full Stack Engineer",
-      detail: "React | Next.js | Python | TypeScript",
+      category: "FULL STACK",
+      title: "Frontend & Web Apps",
+      detail: "React | Next.js | TypeScript | Tailwind",
       image: "/about/developer.jpg",
-      alt: "Focused software engineer with studio headphones",
+      alt: "Software engineer working at desktop setup",
     },
     {
       id: "workspace",
-      category: "PRODUCT MINDSET",
-      title: "Creative Delivery",
-      detail: "System Design | AI Integration | CI/CD",
+      category: "DELIVERY",
+      title: "DevOps & Tooling",
+      detail: "Docker | Git | CI/CD | Linux",
       image: "/about/workspace.jpg",
-      alt: "Minimalist modern developer desk and wireframe sketches",
+      alt: "Clean modern developer workspace and notebooks",
     },
   ];
 
@@ -57,7 +57,7 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
               transition={{ duration: 0.5 }}
             >
               <span className="text-red-500 font-medium tracking-wide text-sm sm:text-base inline-block">
-                Behind the Code
+                A Bit About Me
               </span>
             </motion.div>
 
@@ -68,7 +68,7 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.12]"
             >
-              Shaping Experiences That Make Life Simpler
+              Building solid backends and clean web apps that just work.
             </motion.h2>
           </div>
 
@@ -81,9 +81,9 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-neutral-300 text-base sm:text-lg md:text-xl font-normal leading-relaxed"
             >
-              I&apos;m a full stack &amp; backend developer focused on building clean,
-              high-throughput architectures, asynchronous Python pipelines, and intuitive interfaces
-              that solve real-world problems.
+              I&apos;m a full stack and backend developer. I spend most of my time writing Python
+              services, designing clean database schemas, and building responsive frontends in
+              Next.js. I care about writing code that stays fast, is easy to debug, and doesn&apos;t break in production.
             </motion.p>
 
             {/* Bottom Row: Subtext & Get In Touch Button */}
@@ -96,8 +96,8 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
             >
               {/* Subtext */}
               <div className="text-xs sm:text-sm text-neutral-400 font-medium leading-snug">
-                <p>Let&apos;s Build Something</p>
-                <p className="text-neutral-200">Meaningful Together</p>
+                <p>Have a role or project in mind?</p>
+                <p className="text-neutral-200">Let&apos;s talk.</p>
               </div>
 
               {/* Get In Touch Pill Button */}
@@ -128,7 +128,7 @@ export function AboutSection({ onGetInTouch }: AboutSectionProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 * idx }}
-              className="group relative rounded-3xl overflow-hidden bg-[#0d0d12] border border-white/[0.08] hover:border-red-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.8)] hover:shadow-[0_20px_50px_rgba(220,38,38,0.2)] transition-all duration-500 aspect-[3/4]"
+              className="group relative rounded-3xl overflow-hidden bg-[#0d0d12] border border-white/[0.08] hover:border-red-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.8)] hover:shadow-[0_20px_50px_rgba(220,38,38,0.2)] transition-all duration-500 aspect-[4/3] sm:aspect-[3/4]"
             >
               {/* Card Photo with smooth zoom */}
               <img
