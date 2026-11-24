@@ -18,13 +18,20 @@ interface MainPageProps {
   onToggleSound?: () => void;
 }
 
-const NAV_ITEMS: GooeyNavItem[] = [
+const DESKTOP_NAV_ITEMS: GooeyNavItem[] = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },
+];
+
+const MOBILE_NAV_ITEMS: GooeyNavItem[] = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Work", href: "#projects" },
+  { label: "Skills", href: "#skills" },
 ];
 
 export function MainPage({}: MainPageProps) {
@@ -54,20 +61,20 @@ export function MainPage({}: MainPageProps) {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[500px] bg-gradient-to-b from-white/[0.04] via-violet-500/[0.02] to-transparent blur-[140px] rounded-full" />
         </div>
 
-        {/* Top Header - GooeyNav navbar centered + Hire button on the right (Always visible) */}
-        <header className="fixed top-0 left-0 right-0 z-40 pt-2.5 sm:pt-7 px-2 sm:px-8 pointer-events-none">
+        {/* Top Header - Responsive Navbar centered + Hire button on the right */}
+        <header className="fixed top-0 left-0 right-0 z-40 pt-2 sm:pt-6 px-2 sm:px-8 pointer-events-none">
           <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto relative gap-1.5 sm:gap-4">
-            {/* Left balance spacer so navbar stays dead-center */}
-            <div className="w-40 hidden md:block" aria-hidden="true" />
+            {/* Left balance spacer so navbar stays dead-center on desktop */}
+            <div className="w-10 sm:w-40 hidden md:block" aria-hidden="true" />
 
-            {/* Centered GooeyNav */}
-            <div className="flex-1 flex justify-center min-w-0">
+            {/* Desktop Centered GooeyNav */}
+            <div className="hidden md:flex flex-1 justify-center min-w-0">
               <GooeyNav
-                items={NAV_ITEMS}
+                items={DESKTOP_NAV_ITEMS}
                 activeIndex={activeTab}
                 onChange={(index) => {
                   setActiveTab(index);
-                  if (NAV_ITEMS[index].label === "Contact") {
+                  if (DESKTOP_NAV_ITEMS[index].label === "Contact") {
                     setIsContactOpen(true);
                   }
                 }}
@@ -84,31 +91,56 @@ export function MainPage({}: MainPageProps) {
               />
             </div>
 
-            {/* Right side Expanding Hire Me Button */}
+            {/* Mobile Compact GooeyNav */}
+            <div className="flex md:hidden flex-1 justify-start sm:justify-center min-w-0 pr-1">
+              <GooeyNav
+                items={MOBILE_NAV_ITEMS}
+                size="sm"
+                theme="dark"
+                color="#ffffff"
+                activeTextColor="#000000"
+                colors={["#ffffff", "#f4f4f5"]}
+                frame={true}
+                animationTime={450}
+                gooeyness={0.5}
+                spread={35}
+                particleCount={12}
+                onChange={(index) => {
+                  const targetItem = MOBILE_NAV_ITEMS[index];
+                  if (targetItem?.href) {
+                    const el = document.querySelector(targetItem.href);
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              />
+            </div>
+
+            {/* Right side Hire Me Button (Icon pill on mobile, full expanding on desktop) */}
             <div className="w-auto md:w-40 flex justify-end shrink-0">
               <button
                 type="button"
                 onClick={() => setIsContactOpen(true)}
-                className="group relative inline-flex h-10 sm:h-12 items-center justify-between rounded-full bg-neutral-950/90 border border-white/10 pl-4 sm:pl-5 pr-1 py-1 font-medium text-white shadow-[0_0_20px_rgba(0,0,0,0.6)] hover:border-red-500/50 hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all duration-300 cursor-pointer select-none"
+                className="group relative inline-flex h-9 w-9 sm:h-12 sm:w-auto items-center justify-center sm:justify-between rounded-full bg-neutral-950/90 border border-white/10 sm:pl-5 sm:pr-1 sm:py-1 font-medium text-white shadow-[0_0_20px_rgba(0,0,0,0.6)] hover:border-red-500/50 hover:shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all duration-300 cursor-pointer select-none"
                 title="Open contact & hire sidebar"
+                aria-label="Open contact and hire sidebar"
               >
-                {/* Text Label */}
-                <span className="relative z-10 font-sans text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap text-white group-hover:text-black transition-colors duration-300 pr-2 sm:pr-3">
+                {/* Desktop Text Label */}
+                <span className="hidden sm:inline relative z-10 font-sans text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap text-white group-hover:text-black transition-colors duration-300 pr-2 sm:pr-3">
                   Hire Me
                 </span>
 
                 {/* Expanding Glowing Crimson Red Circle / Pill */}
-                <div className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-[#dc2626] shadow-[0_0_20px_rgba(220,38,38,0.7)] transition-all duration-300 ease-out group-hover:w-[calc(100%-8px)] group-hover:bg-[#ef4444] group-hover:shadow-[0_0_30px_rgba(239,68,68,0.85)] pointer-events-none" />
+                <div className="absolute inset-0 sm:inset-auto sm:right-1 sm:top-1/2 sm:-translate-y-1/2 rounded-full bg-[#dc2626] sm:h-10 sm:w-10 shadow-[0_0_15px_rgba(220,38,38,0.7)] transition-all duration-300 ease-out sm:group-hover:w-[calc(100%-8px)] sm:group-hover:bg-[#ef4444] sm:group-hover:shadow-[0_0_30px_rgba(239,68,68,0.85)] pointer-events-none" />
 
-                {/* Arrow Icon (Centered in the right slot) */}
-                <div className="relative z-10 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center pointer-events-none">
+                {/* Arrow Icon */}
+                <div className="relative z-10 flex h-full w-full sm:h-10 sm:w-10 items-center justify-center pointer-events-none">
                   <svg
                     width="15"
                     height="15"
                     viewBox="0 0 15 15"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-black transition-transform duration-300 group-hover:translate-x-0.5"
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white sm:text-black transition-transform duration-300 sm:group-hover:translate-x-0.5"
                   >
                     <path
                       d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z"

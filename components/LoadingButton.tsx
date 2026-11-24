@@ -76,7 +76,10 @@ export default function LoadingButton({
   // Start counting when autoStart switches to true
   useEffect(() => {
     if (autoStart && stage === "IDLE") {
-      startLoading();
+      const timer = setTimeout(() => {
+        startLoading();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [autoStart, stage, startLoading]);
 

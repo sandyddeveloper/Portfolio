@@ -25,7 +25,7 @@ export function ExperienceTimeline() {
 
             {/* Description */}
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed mb-6 font-normal">
-              Leading the development of end-to-end full-stack architectures and intelligent AI-driven applications at datamoo.ai. Engineering responsive frontend interfaces, reactive data streams, and robust backend microservices.
+              Building full-stack web applications and AI-driven features at datamoo.ai. I work across the stack—crafting clean, responsive user interfaces in Next.js and writing reliable backend services and APIs in Python and Node.js.
             </p>
 
             {/* Key Accomplishments */}
@@ -33,19 +33,19 @@ export function ExperienceTimeline() {
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Engineered scalable web applications and real-time AI dashboards using Next.js, React, and TypeScript.
+                  Built interactive analytics dashboards and user workflows in Next.js, React, and Tailwind CSS.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Architected high-throughput backend services and asynchronous API endpoints in Python & Node.js.
+                  Developed REST APIs, background job workers, and database models using Python, FastAPI, and PostgreSQL.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Collaborated on database design, caching optimization, and production cloud infrastructure deployments.
+                  Configured Redis caching to reduce database load, improved SQL query performance, and helped containerize services with Docker.
                 </span>
               </div>
             </div>
@@ -73,7 +73,7 @@ export function ExperienceTimeline() {
 
             {/* Description */}
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed mb-6 font-normal">
-              Contributed to core product features and frontend-to-backend integrations at datamoo.ai. Developed modular UI components, consumed RESTful services, and optimized data delivery pipelines for analytics platforms.
+              Helped build and test new product features across the frontend and backend. Built reusable React components, integrated RESTful APIs, and wrote automated scripts for data handling.
             </p>
 
             {/* Key Accomplishments */}
@@ -81,19 +81,19 @@ export function ExperienceTimeline() {
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Developed scalable user interfaces and automated workflow triggers using React and Python.
+                  Developed modular UI screens in React and connected them with backend Python endpoints.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Integrated RESTful APIs, optimized data transformation schemas, and resolved latency bottlenecks.
+                  Created data transformation scripts and resolved API bottlenecks across high-traffic data tables.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Participated in daily agile standups, peer code reviews, and automated testing suites.
+                  Took part in daily agile standups, code reviews, and wrote automated unit tests.
                 </span>
               </div>
             </div>
@@ -121,7 +121,7 @@ export function ExperienceTimeline() {
 
             {/* Description */}
             <p className="text-neutral-300 text-sm sm:text-base leading-relaxed mb-6 font-normal">
-              Engineered backend Python solutions, automated batch data processing, and built database interaction layers at Shiash Info Solutions. Focused on clean code patterns, script automation, and performance reliability.
+              Focused on backend scripting and automation. Built data parsing routines, wrote SQL queries for MySQL databases, and helped debug backend utilities for internal client tools.
             </p>
 
             {/* Key Accomplishments */}
@@ -129,19 +129,19 @@ export function ExperienceTimeline() {
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Developed Python scripts for automated ETL processing, data parsing, and file management.
+                  Wrote Python scripts to automate batch data extraction, cleaning, and file generation.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Designed and optimized relational database schemas and SQL queries in MySQL.
+                  Designed relational database schemas, wrote optimized SQL queries, and maintained data integrity.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="text-red-500 mt-1 font-bold">▹</span>
                 <span>
-                  Implemented core API utilities and assisted in debugging and testing enterprise modules.
+                  Assisted senior engineers in troubleshooting API issues and writing clear technical documentation.
                 </span>
               </div>
             </div>
@@ -156,7 +156,7 @@ export function ExperienceTimeline() {
       <Timeline
         data={data}
         title="Experience & Milestones"
-        description="A timeline of my journey from Python automation intern to Full Stack Developer building production web platforms."
+        description="Where I've worked, the teams I've contributed to, and what I built along the way."
       />
     </section>
   );
