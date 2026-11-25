@@ -39,7 +39,7 @@ export function ProjectShowcase() {
   return (
     <section
       id="projects"
-      className={`relative w-full py-20 sm:py-28 lg:py-32 px-4 sm:px-8 lg:px-12 select-none overflow-hidden transition-colors duration-500 ${
+      className={`relative w-full py-20 sm:py-28 lg:py-32 px-4 sm:px-8 lg:px-12 select-none overflow-x-clip transition-colors duration-500 ${
         isDark ? "bg-[#050505] text-white" : "bg-[#faf5ff] text-slate-900"
       }`}
     >
@@ -124,8 +124,8 @@ export function ProjectShowcase() {
             2-COLUMN INTERACTIVE STAGE: LEFT INDEX RAIL + RIGHT FOCUSED STAGE
            ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          {/* LEFT RAIL: Minimal 3-Item Project Index (Desktop) */}
-          <div className="hidden lg:flex lg:col-span-4 flex-col gap-3">
+          {/* LEFT RAIL: Sticky Minimal 3-Item Project Index (Desktop) */}
+          <div className="hidden lg:flex lg:col-span-4 lg:sticky lg:top-28 lg:self-start flex-col gap-3">
             {PROJECTS.map((proj, idx) => {
               const isActive = idx === selectedIndex;
               return (

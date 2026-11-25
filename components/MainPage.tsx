@@ -62,7 +62,7 @@ export function MainPage({}: MainPageProps) {
     >
       <div
         id="home"
-        className={`relative min-h-screen w-full transition-colors duration-500 overflow-x-hidden font-sans flex flex-col justify-between ${
+        className={`relative min-h-screen w-full transition-colors duration-500 overflow-x-clip font-sans flex flex-col justify-between ${
           isDark
             ? "bg-[#050505] text-white selection:bg-red-500/20 selection:text-white"
             : "bg-[#faf5ff] text-slate-900 selection:bg-purple-500/20 selection:text-purple-950"
