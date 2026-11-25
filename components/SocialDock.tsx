@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 export interface SocialItem {
   id: string;
@@ -69,6 +70,9 @@ export function SocialDock({
   className,
   position = "bottom-left",
 }: SocialDockProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [isDockHovered, setIsDockHovered] = useState(false);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
   const [footerOffset, setFooterOffset] = useState<number>(0);
@@ -84,13 +88,10 @@ export function SocialDock({
       const footerRect = footer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Distance from the bottom of the viewport to the top boundary of the footer
       const overlap = windowHeight - footerRect.top;
 
       if (overlap > -40) {
-        // Stop before footer: push dock up so it never enters the footer
         setFooterOffset(Math.max(0, overlap));
-        // Once the footer starts entering the screen, hide the dock completely
         setIsPastFooter(overlap > 20);
       } else {
         setFooterOffset(0);
@@ -154,15 +155,14 @@ export function SocialDock({
       {/* Pill Capsule Container */}
       <div
         className={cn(
-          "relative flex items-center rounded-full",
+          "relative flex items-center rounded-full transition-colors duration-300",
           isHorizontal
             ? "flex-row py-2 sm:py-3 px-3 sm:px-6"
             : "flex-col py-2.5 sm:py-5 px-1.5 sm:px-3.5"
         )}
       >
         {/* 
-          GLOWING ORANGE PILL CAPSULE
-          Bright neon orange with ambient radiance
+          GLOWING PILL CAPSULE (Red in dark mode, Purple in light mode)
         */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -175,9 +175,10 @@ export function SocialDock({
             ease: [0.16, 1, 0.3, 1],
           }}
           className={cn(
-            "absolute inset-0 rounded-full pointer-events-none",
-            "bg-[#dc2626]", // Vibrant crimson red matching the portfolio theme
-            "shadow-[0_0_28px_8px_rgba(220,38,38,0.7),0_0_55px_18px_rgba(239,68,68,0.4)]" // Glowing neon crimson radiance
+            "absolute inset-0 rounded-full pointer-events-none transition-colors",
+            isDark
+              ? "bg-[#dc2626] shadow-[0_0_28px_8px_rgba(220,38,38,0.7),0_0_55px_18px_rgba(239,68,68,0.4)]"
+              : "bg-[#7c3aed] shadow-[0_0_28px_8px_rgba(124,58,237,0.7),0_0_55px_18px_rgba(168,85,247,0.4)]"
           )}
         />
 
@@ -210,8 +211,12 @@ export function SocialDock({
                   className={cn(
                     "w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200",
                     isDockHovered
-                      ? "text-black" // Solid black inside the orange pill
-                      : "text-white/90 hover:text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" // Solid white when unhovered
+                      ? isDark
+                        ? "text-black"
+                        : "text-white"
+                      : isDark
+                      ? "text-white/90 hover:text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                      : "text-slate-700 hover:text-purple-700 drop-shadow-[0_1px_4px_rgba(0,0,0,0.1)]"
                   )}
                 >
                   {item.icon}
@@ -245,10 +250,18 @@ export function SocialDock({
                         isHorizontal ? "bottom-full mb-3 left-1/2" : "left-full ml-3.5"
                       )}
                     >
-                      <div className="px-3 py-1.5 rounded-lg bg-[#0e0e12]/95 border border-red-500/40 text-white text-xs font-medium tracking-wide shadow-[0_10px_25px_rgba(0,0,0,0.7)] backdrop-blur-md flex items-center gap-1.5">
+                      <div
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium tracking-wide shadow-lg backdrop-blur-md flex items-center gap-1.5 border ${
+                          isDark
+                            ? "bg-[#0e0e12]/95 border-red-500/40 text-white"
+                            : "bg-white/95 border-purple-300 text-slate-900"
+                        }`}
+                      >
                         <span>{item.name}</span>
                         <svg
-                          className="w-3 h-3 text-red-400"
+                          className={`w-3 h-3 ${
+                            isDark ? "text-red-400" : "text-purple-600"
+                          }`}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"

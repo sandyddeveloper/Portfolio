@@ -2,315 +2,617 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Lock } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
+import { PROJECTS } from "@/data/project";
 
-interface Project {
-  id: string;
-  number: string;
-  category: string;
-  type: "all" | "backend" | "fullstack" | "data" | "security";
-  title: string;
-  tagline: string;
-  description: string;
-  image: string;
-  metrics: { label: string; value: string }[];
-  tech: string[];
-  liveUrl: string;
-  githubUrl: string;
-}
-
-const PROJECTS: Project[] = [
-  {
-    id: "pulsestream",
-    number: "01",
-    category: "BACKEND & DISTRIBUTED SYSTEMS",
-    type: "backend",
-    title: "PulseStream",
-    tagline: "Asynchronous Event Ingestion Engine",
-    description:
-      "An event ingestion service built to handle bursty webhook traffic without dropping requests. Buffers incoming requests through Redis queues and processes them asynchronously with Celery workers, keeping p99 response times under 12ms.",
-    image: "/projects/cloud-infra.jpg",
-    metrics: [
-      { label: "Throughput", value: "14.5k req/s" },
-      { label: "P99 Latency", value: "< 12ms" },
-    ],
-    tech: ["FastAPI", "Python 3.12", "Redis", "PostgreSQL", "Docker", "Celery"],
-    liveUrl: "https://github.com/",
-    githubUrl: "https://github.com/",
-  },
-  {
-    id: "nexus-commerce",
-    number: "02",
-    category: "FULL STACK WEB PLATFORM",
-    type: "fullstack",
-    title: "Nexus Commerce",
-    tagline: "Full Stack Headless Storefront & Inventory",
-    description:
-      "A fast, modern e-commerce web app built with Next.js 16 and PostgreSQL. Features instant search, optimistic cart updates, an admin sales dashboard, and reliable Stripe webhook handling for orders.",
-    image: "/projects/fintech.jpg",
-    metrics: [
-      { label: "Lighthouse", value: "99 / 100" },
-      { label: "First Paint", value: "0.6s" },
-    ],
-    tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS", "PostgreSQL", "Stripe"],
-    liveUrl: "https://github.com/",
-    githubUrl: "https://github.com/",
-  },
-  {
-    id: "datacraft",
-    number: "03",
-    category: "DATA PIPELINES & AUTOMATION",
-    type: "data",
-    title: "DataCraft",
-    tagline: "Automated ETL & Data Migration Tool",
-    description:
-      "A data processing tool written in Python to parse, validate, and clean messy CSV and JSON feeds before importing them into relational databases. Includes automated retry logic and error logging.",
-    image: "/projects/ai-agent.jpg",
-    metrics: [
-      { label: "Sync Speed", value: "85k rows/s" },
-      { label: "Data Volume", value: "850GB+" },
-    ],
-    tech: ["Python", "Pandas", "MySQL", "Redis", "REST APIs", "Docker"],
-    liveUrl: "https://github.com/",
-    githubUrl: "https://github.com/",
-  },
-  {
-    id: "devvault",
-    number: "04",
-    category: "DEVELOPER TOOLS & SECURITY",
-    type: "security",
-    title: "DevVault",
-    tagline: "Encrypted Secrets Manager & CLI",
-    description:
-      "A developer utility for syncing encrypted environment variables with teammates without sending raw keys over chat. Features client-side AES-256 encryption, access logs, and a command-line interface.",
-    image: "/projects/chatbot.jpg",
-    metrics: [
-      { label: "Encryption", value: "AES-256" },
-      { label: "Sync Latency", value: "< 4ms" },
-    ],
-    tech: ["Node.js", "TypeScript", "Docker", "PostgreSQL", "AES-256", "Tailwind CSS"],
-    liveUrl: "https://github.com/",
-    githubUrl: "https://github.com/",
-  },
-];
-
-const FILTER_TABS = [
-  { id: "all", label: "All Projects" },
-  { id: "backend", label: "Backend" },
-  { id: "fullstack", label: "Full Stack" },
-  { id: "data", label: "Data & ETL" },
-  { id: "security", label: "Security & Tools" },
-] as const;
+type StageTab = "overview" | "architecture";
 
 export function ProjectShowcase() {
-  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
-  const filteredProjects =
-    activeFilter === "all"
-      ? PROJECTS
-      : PROJECTS.filter((p) => p.type === activeFilter);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [stageTab, setStageTab] = useState<StageTab>("overview");
+  const [hoveredNdaId, setHoveredNdaId] = useState<string | null>(null);
+
+  const activeProject = PROJECTS[selectedIndex] ?? PROJECTS[0];
+
+  const handleSelectProject = (index: number) => {
+    setSelectedIndex(index);
+    setStageTab("overview");
+    setHoveredNdaId(null);
+  };
+
+  const handlePrev = () => {
+    handleSelectProject(
+      selectedIndex === 0 ? PROJECTS.length - 1 : selectedIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    handleSelectProject(
+      selectedIndex === PROJECTS.length - 1 ? 0 : selectedIndex + 1
+    );
+  };
 
   return (
     <section
       id="projects"
-      className="relative w-full bg-[#050505] text-white py-20 sm:py-28 lg:py-36 px-4 sm:px-8 lg:px-12 select-none overflow-hidden"
+      className={`relative w-full py-20 sm:py-28 lg:py-32 px-4 sm:px-8 lg:px-12 select-none overflow-hidden transition-colors duration-500 ${
+        isDark ? "bg-[#050505] text-white" : "bg-[#faf5ff] text-slate-900"
+      }`}
     >
-      {/* Subtle Ambient Background Glows */}
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 w-[700px] h-[500px] bg-red-600/[0.03] blur-[180px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 w-[700px] h-[500px] bg-red-600/[0.02] blur-[180px] rounded-full pointer-events-none" />
+      {/* Subtle Ambient Background Glow */}
+      <div
+        className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[680px] h-[420px] blur-[170px] rounded-full pointer-events-none transition-colors duration-700 ${
+          isDark ? "bg-red-600/[0.04]" : "bg-purple-600/[0.06]"
+        }`}
+      />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* =========================================================================
-            SECTION HEADER
+            MINIMALIST SECTION HEADER
            ========================================================================= */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16 lg:mb-20">
-          <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
+          <div className="space-y-2.5">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 inline-block animate-pulse" />
-              <span className="text-xs font-mono font-bold tracking-[0.2em] text-red-500 uppercase">
-                Featured Work • {new Date().getFullYear()}
+              <span
+                className={`w-1.5 h-1.5 rounded-full inline-block animate-pulse ${
+                  isDark ? "bg-red-500" : "bg-purple-600"
+                }`}
+              />
+              <span
+                className={`text-[11px] font-mono font-bold tracking-[0.22em] uppercase ${
+                  isDark ? "text-red-500" : "text-purple-600"
+                }`}
+              >
+                Selected Work • {new Date().getFullYear()}
               </span>
             </div>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
-              Things I&apos;ve Built &amp; Shipped<span className="text-red-500">.</span>
+            <h2
+              className={`text-3xl sm:text-5xl font-bold tracking-tight leading-none ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
+              Featured Projects
+              <span className={isDark ? "text-red-500" : "text-purple-600"}>.</span>
             </h2>
           </div>
 
-          <p className="max-w-md text-sm sm:text-base text-neutral-400 leading-relaxed">
-            A look at some of the backend services, data pipelines, and full-stack web applications I&apos;ve designed, coded, and deployed.
+          <p
+            className={`max-w-sm text-xs sm:text-sm leading-relaxed ${
+              isDark ? "text-neutral-400" : "text-slate-600"
+            }`}
+          >
+            Select a project to explore its overview, tech stack, and backend architecture.
           </p>
         </div>
 
         {/* =========================================================================
-            CATEGORY FILTER TABS
+            MOBILE SEGMENTED PROJECT SELECTOR (Under lg)
            ========================================================================= */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-10 sm:mb-16 scrollbar-none px-1 [webkit-overflow-scrolling:touch]">
-          {FILTER_TABS.map((tab) => {
-            const isActive = activeFilter === tab.id;
+        <div className="flex lg:hidden items-center gap-2 overflow-x-auto pb-4 mb-4 scrollbar-none">
+          {PROJECTS.map((proj, idx) => {
+            const isActive = idx === selectedIndex;
             return (
               <button
-                key={tab.id}
+                key={proj.id}
                 type="button"
-                onClick={() => setActiveFilter(tab.id)}
-                className={`relative px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-mono tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 ${
+                onClick={() => handleSelectProject(idx)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-mono border transition-all shrink-0 cursor-pointer ${
                   isActive
-                    ? "text-white font-semibold shadow-[0_0_20px_rgba(220,38,38,0.35)]"
-                    : "text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/5"
+                    ? isDark
+                      ? "bg-[#dc2626] border-red-500 text-white font-semibold shadow-[0_0_20px_rgba(220,38,38,0.35)]"
+                      : "bg-[#7c3aed] border-purple-500 text-white font-semibold shadow-[0_0_20px_rgba(124,58,237,0.3)]"
+                    : isDark
+                    ? "bg-white/[0.03] border-white/10 text-neutral-400"
+                    : "bg-white border-purple-200 text-slate-600"
                 }`}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeFilterBg"
-                    className="absolute inset-0 rounded-full bg-[#dc2626] border border-red-500/60"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{tab.label}</span>
+                <span>{proj.number}</span>
+                <span className={proj.isConfidential ? "blur-[4px]" : ""}>
+                  {proj.title}
+                </span>
+                {proj.isConfidential && <Lock className="w-3 h-3 opacity-80" />}
               </button>
             );
           })}
         </div>
 
         {/* =========================================================================
-            ALTERNATING PROJECT SHOWCASE LIST
+            2-COLUMN INTERACTIVE STAGE: LEFT INDEX RAIL + RIGHT FOCUSED STAGE
            ========================================================================= */}
-        <div className="space-y-20 sm:space-y-28 lg:space-y-36">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => {
-              const isEven = index % 2 === 0;
-
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          {/* LEFT RAIL: Minimal 3-Item Project Index (Desktop) */}
+          <div className="hidden lg:flex lg:col-span-4 flex-col gap-3">
+            {PROJECTS.map((proj, idx) => {
+              const isActive = idx === selectedIndex;
               return (
-                <motion.article
-                  key={project.id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                  className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+                <button
+                  key={proj.id}
+                  type="button"
+                  onClick={() => handleSelectProject(idx)}
+                  className={`group w-full text-left rounded-2xl p-4 sm:p-5 border transition-all duration-300 cursor-pointer relative overflow-hidden ${
+                    isActive
+                      ? isDark
+                        ? "bg-[#0d0d13] border-red-500/50 shadow-[0_12px_35px_rgba(220,38,38,0.12)]"
+                        : "bg-white border-purple-400 shadow-[0_12px_35px_rgba(124,58,237,0.12)]"
+                      : isDark
+                      ? "bg-[#09090d]/70 border-white/[0.06] hover:border-white/20"
+                      : "bg-white/70 border-purple-100 hover:border-purple-300"
+                  }`}
                 >
-                  {/* Visual Image Showcase (Span 7) */}
-                  <div
-                    className={`lg:col-span-7 ${
-                      isEven ? "lg:order-2" : "lg:order-1"
-                    }`}
-                  >
-                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-[16/10] rounded-3xl overflow-hidden border border-white/[0.09] bg-[#0c0c11] shadow-[0_30px_80px_rgba(0,0,0,0.85)] hover:border-red-500/40 hover:shadow-[0_25px_60px_rgba(220,38,38,0.2)] transition-all duration-500">
-                      {/* Project Image with Smooth Hover Zoom */}
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.95] contrast-[1.05]"
-                        loading="lazy"
-                      />
+                  {/* Active Accent Strip */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeProjectRail"
+                      className={`absolute left-0 top-3 bottom-3 w-1 rounded-r-full ${
+                        isDark ? "bg-red-500" : "bg-purple-600"
+                      }`}
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
 
-                      {/* Ambient Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span
+                      className={`text-xs font-mono font-bold ${
+                        isActive
+                          ? isDark
+                            ? "text-red-500"
+                            : "text-purple-600"
+                          : isDark
+                          ? "text-neutral-500"
+                          : "text-slate-400"
+                      }`}
+                    >
+                      {proj.number}
+                    </span>
 
-                      {/* Top Status Bar Inside Image */}
-                      <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-4 flex items-center justify-between text-xs font-mono">
-                        <span className="px-2.5 sm:px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-neutral-300 font-semibold tracking-wider text-[11px] sm:text-xs">
-                          {project.number} / 04
-                        </span>
-
-                        <span className="px-2.5 sm:px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-red-400 font-medium tracking-widest text-[9.5px] sm:text-xs uppercase truncate max-w-[180px] sm:max-w-none">
-                          {project.category}
-                        </span>
-                      </div>
-
-                      {/* Bottom Status Pill Inside Image */}
-                      <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 flex items-center gap-2 px-3 py-1 sm:py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[11px] sm:text-xs font-mono text-neutral-300">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse" />
-                        <span>Shipped &amp; Tested</span>
-                      </div>
-                    </div>
+                    {proj.company && (
+                      <span
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                          isDark
+                            ? "bg-white/[0.03] border-white/10 text-neutral-400"
+                            : "bg-purple-50 border-purple-200/80 text-purple-800"
+                        }`}
+                      >
+                        @ {proj.company}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Project Details & Specification (Span 5) */}
-                  <div
-                    className={`lg:col-span-5 space-y-5 sm:space-y-6 ${
-                      isEven ? "lg:order-1" : "lg:order-2"
+                  <div className="flex items-center gap-2">
+                    <h3
+                      className={`text-base font-bold tracking-tight transition-colors ${
+                        proj.isConfidential ? "blur-[5px] select-none opacity-80" : ""
+                      } ${
+                        isActive
+                          ? isDark
+                            ? "text-white"
+                            : "text-slate-900"
+                          : isDark
+                          ? "text-neutral-300 group-hover:text-white"
+                          : "text-slate-700 group-hover:text-slate-900"
+                      }`}
+                    >
+                      {proj.title}
+                    </h3>
+                    {proj.isConfidential && (
+                      <Lock
+                        className={`w-3.5 h-3.5 shrink-0 ${
+                          isDark ? "text-red-400" : "text-purple-600"
+                        }`}
+                      />
+                    )}
+                  </div>
+
+                  <p
+                    className={`text-[11px] font-mono uppercase tracking-wider mt-1.5 truncate ${
+                      isDark ? "text-neutral-500" : "text-slate-500"
                     }`}
                   >
-                    {/* Category Kicker */}
-                    <div className="flex items-center gap-2 font-mono text-xs text-red-500 font-semibold tracking-[0.2em] uppercase">
-                      <span>✦</span>
-                      <span>{project.category}</span>
-                    </div>
+                    {proj.category}
+                  </p>
+                </button>
+              );
+            })}
 
-                    {/* Title & Tagline */}
-                    <div>
-                      <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight group-hover:text-red-50 transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm sm:text-base font-mono text-neutral-400 mt-1.5">
-                        {project.tagline}
+            {/* Subtle Prev / Next Controls */}
+            <div className="flex items-center justify-between pt-2 px-1">
+              <span
+                className={`text-xs font-mono ${
+                  isDark ? "text-neutral-500" : "text-slate-500"
+                }`}
+              >
+                {activeProject.number} of {String(PROJECTS.length).padStart(2, "0")}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  aria-label="Previous project"
+                  className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                    isDark
+                      ? "border-white/10 bg-white/[0.03] text-neutral-300 hover:border-red-500/50 hover:text-white"
+                      : "border-purple-200 bg-white text-slate-700 hover:border-purple-400 hover:text-purple-900"
+                  }`}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  aria-label="Next project"
+                  className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                    isDark
+                      ? "border-white/10 bg-white/[0.03] text-neutral-300 hover:border-red-500/50 hover:text-white"
+                      : "border-purple-200 bg-white text-slate-700 hover:border-purple-400 hover:text-purple-900"
+                  }`}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT STAGE: Clean, Uncluttered Active Project Card */}
+          <div className="lg:col-span-8">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={activeProject.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className={`rounded-3xl border overflow-hidden transition-colors duration-500 ${
+                  isDark
+                    ? "bg-[#0a0a0e]/95 border-white/[0.08] shadow-[0_24px_70px_rgba(0,0,0,0.75)]"
+                    : "bg-white border-purple-200/80 shadow-[0_20px_60px_rgba(124,58,237,0.08)]"
+                }`}
+              >
+                {/* Clean Meta Bar Above Image (No clutter on the photo itself) */}
+                <div
+                  className={`flex flex-wrap items-center justify-between gap-2 px-5 sm:px-7 py-3.5 border-b text-[11px] font-mono ${
+                    isDark
+                      ? "border-white/[0.06] text-neutral-400"
+                      : "border-purple-100 text-slate-500"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className={`font-bold ${
+                        isDark ? "text-red-500" : "text-purple-600"
+                      }`}
+                    >
+                      {activeProject.number} / {String(PROJECTS.length).padStart(2, "0")}
+                    </span>
+                    {activeProject.company && (
+                      <>
+                        <span>•</span>
+                        <span
+                          className={
+                            isDark
+                              ? "text-neutral-200 font-semibold"
+                              : "text-purple-900 font-semibold"
+                          }
+                        >
+                          @ {activeProject.company}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  <span className="uppercase tracking-wider truncate max-w-[240px] sm:max-w-none">
+                    {activeProject.category}
+                  </span>
+                </div>
+
+                {/* Clean Visual Banner */}
+                <div className="p-4 sm:p-6 pb-0">
+                  <div
+                    className={`relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden border ${
+                      isDark
+                        ? "border-white/[0.06] bg-[#0e0e14]"
+                        : "border-purple-100 bg-purple-50"
+                    }`}
+                  >
+                    <img
+                      src={activeProject.image}
+                      alt={
+                        activeProject.isConfidential
+                          ? "Confidential Project Visual"
+                          : activeProject.title
+                      }
+                      className={`w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.03] ${
+                        isDark
+                          ? "filter brightness-[0.9] contrast-[1.05]"
+                          : "filter brightness-[1.03] contrast-[0.98]"
+                      }`}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+
+                {/* Content Stage */}
+                <div className="p-5 sm:p-7 space-y-6">
+                  {/* Title, Tagline & Overview/Architecture Micro-Switcher */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      {activeProject.isConfidential ? (
+                        <div
+                          className="relative inline-flex items-center gap-3 cursor-help"
+                          onMouseEnter={() => setHoveredNdaId(activeProject.id)}
+                          onMouseLeave={() => setHoveredNdaId(null)}
+                          onClick={() =>
+                            setHoveredNdaId((prev) =>
+                              prev === activeProject.id ? null : activeProject.id
+                            )
+                          }
+                        >
+                          <h3
+                            aria-label="Confidential project name"
+                            className={`text-2xl sm:text-3xl font-bold tracking-tight select-none blur-[9px] opacity-75 ${
+                              isDark ? "text-white" : "text-slate-900"
+                            }`}
+                          >
+                            {activeProject.title}
+                          </h3>
+
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider uppercase border shrink-0 ${
+                              isDark
+                                ? "bg-red-500/10 border-red-500/30 text-red-400"
+                                : "bg-purple-100 border-purple-300 text-purple-700"
+                            }`}
+                          >
+                            <Lock className="w-3 h-3" />
+                            <span>NDA</span>
+                          </span>
+
+                          <AnimatePresence>
+                            {hoveredNdaId === activeProject.id && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                                transition={{ duration: 0.18, ease: "easeOut" }}
+                                className={`absolute left-0 bottom-full mb-3 z-40 w-[min(320px,80vw)] rounded-xl p-3 sm:p-3.5 border shadow-xl backdrop-blur-xl pointer-events-none ${
+                                  isDark
+                                    ? "bg-[#121218]/95 border-red-500/40 text-neutral-100 shadow-[0_12px_35px_rgba(0,0,0,0.85)]"
+                                    : "bg-white/95 border-purple-300 text-slate-800 shadow-[0_12px_35px_rgba(124,58,237,0.18)]"
+                                }`}
+                              >
+                                <div className="flex items-start gap-2.5">
+                                  <Lock
+                                    className={`w-4 h-4 mt-0.5 shrink-0 ${
+                                      isDark ? "text-red-400" : "text-purple-600"
+                                    }`}
+                                  />
+                                  <p className="text-xs sm:text-[13px] font-sans font-medium leading-snug">
+                                    {activeProject.confidentialMessage ||
+                                      "Sorry, as per company policy, the project name cannot be revealed."}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <h3
+                          className={`text-2xl sm:text-3xl font-bold tracking-tight ${
+                            isDark ? "text-white" : "text-slate-900"
+                          }`}
+                        >
+                          {activeProject.title}
+                        </h3>
+                      )}
+
+                      <p
+                        className={`text-xs sm:text-sm font-mono ${
+                          isDark ? "text-neutral-400" : "text-purple-900/70"
+                        }`}
+                      >
+                        {activeProject.tagline}
                       </p>
                     </div>
 
-                    {/* Clear Description */}
-                    <p className="text-sm sm:text-base text-neutral-300 font-normal leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    {/* High-Impact Performance Metrics Chips */}
-                    <div className="grid grid-cols-2 gap-3 py-4 border-y border-white/[0.08]">
-                      {project.metrics.map((metric, mIdx) => (
-                        <div key={mIdx} className="flex flex-col">
-                          <span className="font-mono text-base sm:text-lg font-bold text-white tracking-tight">
-                            {metric.value}
-                          </span>
-                          <span className="text-[10px] sm:text-xs font-mono text-neutral-400 uppercase tracking-wider mt-0.5">
-                            {metric.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Tech Stack Badges */}
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((t) => (
-                        <span
-                          key={t}
-                          className="px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-neutral-300 text-xs font-mono font-medium tracking-wide"
+                    {/* Clean 2-Tab Micro-Switcher: Overview | Architecture */}
+                    {activeProject.highlights &&
+                      activeProject.highlights.length > 0 && (
+                        <div
+                          className={`inline-flex p-1 rounded-full border shrink-0 self-start ${
+                            isDark
+                              ? "bg-white/[0.03] border-white/10"
+                              : "bg-purple-50/70 border-purple-200/80"
+                          }`}
                         >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Action Links */}
-                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 pt-2">
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-full bg-[#dc2626] hover:bg-[#ef4444] text-white text-xs sm:text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] transition-all duration-300 cursor-pointer text-center"
-                      >
-                        <span>Live Demo</span>
-                        <ArrowUpRight className="w-4 h-4" />
-                      </a>
-
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-neutral-200 hover:text-white text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 cursor-pointer text-center"
-                      >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                          />
-                        </svg>
-                        <span>Source Code</span>
-                      </a>
-                    </div>
+                          <button
+                            type="button"
+                            onClick={() => setStageTab("overview")}
+                            className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
+                              stageTab === "overview"
+                                ? isDark
+                                  ? "bg-[#dc2626] text-white shadow-sm"
+                                  : "bg-[#7c3aed] text-white shadow-sm"
+                                : isDark
+                                ? "text-neutral-400 hover:text-white"
+                                : "text-slate-600 hover:text-slate-900"
+                            }`}
+                          >
+                            Overview
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setStageTab("architecture")}
+                            className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
+                              stageTab === "architecture"
+                                ? isDark
+                                  ? "bg-[#dc2626] text-white shadow-sm"
+                                  : "bg-[#7c3aed] text-white shadow-sm"
+                                : isDark
+                                ? "text-neutral-400 hover:text-white"
+                                : "text-slate-600 hover:text-slate-900"
+                            }`}
+                          >
+                            Architecture ({activeProject.highlights.length})
+                          </button>
+                        </div>
+                      )}
                   </div>
-                </motion.article>
-              );
-            })}
-          </AnimatePresence>
+
+                  {/* Tab Content Area */}
+                  <AnimatePresence mode="wait">
+                    {stageTab === "overview" ? (
+                      <motion.div
+                        key="tab-overview"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18 }}
+                        className="space-y-6"
+                      >
+                        {/* Clean Readable Summary */}
+                        <p
+                          className={`text-sm sm:text-[15px] leading-relaxed max-w-prose ${
+                            isDark ? "text-neutral-300" : "text-slate-600"
+                          }`}
+                        >
+                          {activeProject.description}
+                        </p>
+
+                        {/* Minimal Horizontal Metrics Strip */}
+                        <div
+                          className={`grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y ${
+                            isDark ? "border-white/[0.08]" : "border-purple-100"
+                          }`}
+                        >
+                          {activeProject.metrics.map((metric, mIdx) => (
+                            <div key={mIdx}>
+                              <div
+                                className={`font-mono text-sm sm:text-base font-bold tracking-tight ${
+                                  isDark ? "text-white" : "text-slate-900"
+                                }`}
+                              >
+                                {metric.value}
+                              </div>
+                              <div
+                                className={`text-[10px] font-mono uppercase tracking-wider mt-0.5 ${
+                                  isDark ? "text-neutral-400" : "text-slate-500"
+                                }`}
+                              >
+                                {metric.label}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Tech Stack Labels with Logos */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {activeProject.tech.map((t) => (
+                            <span
+                              key={t.name}
+                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono font-medium border transition-colors ${
+                                isDark
+                                  ? "bg-white/[0.04] border-white/[0.09] text-neutral-200 hover:border-red-500/40"
+                                  : "bg-purple-50/80 border-purple-200/80 text-purple-950 hover:border-purple-400 shadow-2xs"
+                              }`}
+                            >
+                              {t.iconSrc && (
+                                <img
+                                  src={t.iconSrc}
+                                  alt={t.name}
+                                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain shrink-0 pointer-events-none"
+                                  loading="lazy"
+                                />
+                              )}
+                              <span>{t.name}</span>
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Action Links (if provided) */}
+                        {(activeProject.liveUrl || activeProject.githubUrl) && (
+                          <div className="flex flex-wrap items-center gap-3 pt-1">
+                            {activeProject.liveUrl && (
+                              <a
+                                href={activeProject.liveUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-white text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                                  isDark
+                                    ? "bg-[#dc2626] hover:bg-[#ef4444]"
+                                    : "bg-[#7c3aed] hover:bg-[#8b5cf6]"
+                                }`}
+                              >
+                                <span>Live Demo</span>
+                                <ArrowUpRight className="w-4 h-4" />
+                              </a>
+                            )}
+                            {activeProject.githubUrl && (
+                              <a
+                                href={activeProject.githubUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium border transition-all duration-300 ${
+                                  isDark
+                                    ? "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-neutral-200"
+                                    : "bg-white hover:bg-purple-50 border-purple-200 text-slate-700"
+                                }`}
+                              >
+                                <span>Source Code</span>
+                              </a>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="tab-architecture"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18 }}
+                        className={`divide-y ${
+                          isDark ? "divide-white/[0.07]" : "divide-purple-100"
+                        }`}
+                      >
+                        {activeProject.highlights?.map((item, hIdx) => (
+                          <div key={hIdx} className="py-3.5 first:pt-1 last:pb-1">
+                            <div className="flex items-baseline gap-3">
+                              <span
+                                className={`text-xs font-mono font-bold shrink-0 ${
+                                  isDark ? "text-red-500" : "text-purple-600"
+                                }`}
+                              >
+                                {String(hIdx + 1).padStart(2, "0")}
+                              </span>
+                              <div className="space-y-1">
+                                <h4
+                                  className={`text-sm sm:text-base font-semibold tracking-tight ${
+                                    isDark ? "text-white" : "text-slate-900"
+                                  }`}
+                                >
+                                  {item.title}
+                                </h4>
+                                <p
+                                  className={`text-xs sm:text-sm leading-relaxed ${
+                                    isDark ? "text-neutral-400" : "text-slate-600"
+                                  }`}
+                                >
+                                  {item.summary}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

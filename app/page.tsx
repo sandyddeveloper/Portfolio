@@ -6,6 +6,7 @@ import BackgroundCubesGridSection from "@/components/LoadingBackground";
 import { MainPage } from "@/components/MainPage";
 import ElectricLogo from "@/components/ElectricLogo";
 import AudioAlertBox from "@/components/AudioAlertBox";
+import { ThemeProvider } from "@/context/ThemeContext";
 import {
   playElectricHum,
   playLightningFlashSound,
@@ -288,11 +289,13 @@ export default function Home() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="relative z-20 w-full min-h-screen"
           >
-            <MainPage
-              onReplayIntro={handleReplayIntro}
-              soundEnabled={soundEnabled}
-              onToggleSound={handleToggleSound}
-            />
+            <ThemeProvider>
+              <MainPage
+                onReplayIntro={handleReplayIntro}
+                soundEnabled={soundEnabled}
+                onToggleSound={handleToggleSound}
+              />
+            </ThemeProvider>
           </motion.div>
         )}
       </AnimatePresence>
