@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 interface PaperPlaneContactProps {
   recipientName?: string;
@@ -85,6 +86,8 @@ export function PaperPlaneContact({
   onClose,
   className,
 }: PaperPlaneContactProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [note, setNote] = useState("");
   const [email, setEmail] = useState("");
   const [step, setStep] = useState<AnimationStep>("IDLE");
@@ -617,8 +620,10 @@ export function PaperPlaneContact({
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.3 }}
               className={cn(
-                "w-full rounded-2xl bg-[#09090b] border border-white/[0.08]",
-                "shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-4 sm:p-5 flex flex-col justify-between"
+                "w-full rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-colors",
+                isDark
+                  ? "bg-[#09090b] border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-white"
+                  : "bg-white border border-purple-200 shadow-[0_15px_40px_rgba(124,58,237,0.1)] text-slate-900"
               )}
             >
               {/* Email field (enlarged for better typing experience) */}
@@ -629,7 +634,12 @@ export function PaperPlaneContact({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address (so I can reply)..."
                   disabled={step !== "IDLE"}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.08] focus:border-white/30 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none transition-all font-sans shadow-inner"
+                  className={cn(
+                    "w-full px-4 py-2.5 rounded-xl text-sm focus:outline-none transition-all font-sans",
+                    isDark
+                      ? "bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.08] focus:border-white/30 text-neutral-100 placeholder-neutral-500 shadow-inner"
+                      : "bg-purple-50/50 hover:bg-purple-50/80 border border-purple-200 focus:border-purple-500 text-slate-900 placeholder-slate-400 shadow-sm"
+                  )}
                 />
               </div>
 
@@ -642,19 +652,32 @@ export function PaperPlaneContact({
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Say hello, propose a project, or drop a note..."
                   disabled={step !== "IDLE"}
-                  className="w-full bg-transparent text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none resize-none font-sans leading-relaxed min-h-[75px]"
+                  className={cn(
+                    "w-full bg-transparent text-sm focus:outline-none resize-none font-sans leading-relaxed min-h-[75px]",
+                    isDark
+                      ? "text-neutral-100 placeholder-neutral-500"
+                      : "text-slate-900 placeholder-slate-400"
+                  )}
                 />
               </div>
 
               {/* Bottom bar with 'On its way to Santhosh' & Send Button */}
-              <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] mt-2">
+              <div
+                className={`flex items-center justify-between pt-3 border-t mt-2 ${
+                  isDark ? "border-white/[0.06]" : "border-purple-100"
+                }`}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-neutral-400 font-sans">
+                  <span
+                    className={`text-xs font-sans ${
+                      isDark ? "text-neutral-400" : "text-slate-500"
+                    }`}
+                  >
                     On its way to {recipientName}
                   </span>
                 </div>
 
-                {/* White Send / Sending / Sent Action Button */}
+                {/* Send / Sending / Sent Action Button */}
                 <button
                   ref={sendBtnRef}
                   type="button"
@@ -662,12 +685,23 @@ export function PaperPlaneContact({
                   disabled={step !== "IDLE" || !note.trim()}
                   className={cn(
                     "relative font-medium text-xs sm:text-sm px-4 py-2 rounded-xl transition-all select-none flex items-center gap-2 cursor-pointer",
-                    step === "IDLE" &&
-                      "bg-white hover:bg-neutral-200 text-black font-semibold shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed",
-                    step !== "IDLE" && step !== "LANDED" &&
-                      "bg-white text-black font-semibold cursor-wait opacity-95",
-                    step === "LANDED" &&
-                      "bg-white text-black font-semibold shadow-[0_0_30px_rgba(255,255,255,0.6)] scale-105"
+                    isDark
+                      ? [
+                          step === "IDLE" &&
+                            "bg-white hover:bg-neutral-200 text-black font-semibold shadow-[0_0_20px_rgba(255,255,255,0.25)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed",
+                          step !== "IDLE" && step !== "LANDED" &&
+                            "bg-white text-black font-semibold cursor-wait opacity-95",
+                          step === "LANDED" &&
+                            "bg-white text-black font-semibold shadow-[0_0_30px_rgba(255,255,255,0.6)] scale-105",
+                        ]
+                      : [
+                          step === "IDLE" &&
+                            "bg-[#7c3aed] hover:bg-[#8b5cf6] text-white font-semibold shadow-[0_0_20px_rgba(124,58,237,0.35)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed",
+                          step !== "IDLE" && step !== "LANDED" &&
+                            "bg-[#7c3aed] text-white font-semibold cursor-wait opacity-95",
+                          step === "LANDED" &&
+                            "bg-[#7c3aed] text-white font-semibold shadow-[0_0_30px_rgba(124,58,237,0.6)] scale-105",
+                        ]
                   )}
                 >
                   {step === "IDLE" && (
@@ -682,7 +716,7 @@ export function PaperPlaneContact({
                         strokeWidth="2.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-black"
+                        className={isDark ? "text-black" : "text-white"}
                       >
                         <line x1="22" y1="2" x2="11" y2="13" />
                         <polygon points="22 2 15 22 11 13 2 9 22 2" fill="currentColor" />
@@ -693,7 +727,13 @@ export function PaperPlaneContact({
                   {step !== "IDLE" && step !== "LANDED" && (
                     <>
                       <span>Sending</span>
-                      <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      <span
+                        className={`w-3.5 h-3.5 border-2 rounded-full animate-spin ${
+                          isDark
+                            ? "border-black/30 border-t-black"
+                            : "border-white/30 border-t-white"
+                        }`}
+                      />
                     </>
                   )}
 
@@ -709,7 +749,7 @@ export function PaperPlaneContact({
                         strokeWidth="2.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-black"
+                        className={isDark ? "text-black" : "text-white"}
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -727,27 +767,47 @@ export function PaperPlaneContact({
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className={cn(
-                "w-full rounded-2xl bg-[#09090b] border border-white/[0.08]",
-                "shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-5 flex flex-col justify-between"
+                "w-full rounded-2xl p-5 flex flex-col justify-between transition-colors",
+                isDark
+                  ? "bg-[#09090b] border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-white"
+                  : "bg-white border border-purple-200 shadow-[0_20px_50px_rgba(124,58,237,0.12)] text-slate-900"
               )}
             >
               {/* Header: Sent to 🌐 Santhosh + Timestamp */}
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                  <span className="text-neutral-400 font-normal">Sent to</span>
+                <div
+                  className={`flex items-center gap-1.5 text-sm font-semibold ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
+                >
+                  <span
+                    className={
+                      isDark ? "text-neutral-400 font-normal" : "text-slate-500 font-normal"
+                    }
+                  >
+                    Sent to
+                  </span>
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs">
                     🌐
                   </span>
                   <span>{recipientName}</span>
                 </div>
 
-                <span className="text-xs font-mono text-neutral-400">
+                <span
+                  className={`text-xs font-mono ${
+                    isDark ? "text-neutral-400" : "text-slate-500"
+                  }`}
+                >
                   {currentTime || "4:40 PM"}
                 </span>
               </div>
 
               {/* Explanatory receipt text */}
-              <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-5">
+              <p
+                className={`text-xs sm:text-sm leading-relaxed mb-5 ${
+                  isDark ? "text-neutral-400" : "text-slate-600"
+                }`}
+              >
                 I read every note myself and usually reply within 24 hours. Keep an eye on your email inbox!
               </p>
 
@@ -756,7 +816,11 @@ export function PaperPlaneContact({
                 <button
                   type="button"
                   onClick={handleWriteAnother}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs sm:text-sm font-semibold shadow-[0_0_20px_rgba(255,255,255,0.25)] transition-all active:scale-95 cursor-pointer text-center"
+                  className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 cursor-pointer text-center ${
+                    isDark
+                      ? "bg-white hover:bg-neutral-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+                      : "bg-[#7c3aed] hover:bg-[#8b5cf6] text-white shadow-[0_0_20px_rgba(124,58,237,0.35)]"
+                  }`}
                 >
                   Write another
                 </button>
@@ -764,7 +828,11 @@ export function PaperPlaneContact({
                 <button
                   type="button"
                   onClick={handleEditAndResend}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-[#18181b] hover:bg-[#27272a] text-neutral-300 hover:text-white border border-white/10 text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center"
+                  className={`flex-1 py-2.5 px-4 rounded-xl border text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center ${
+                    isDark
+                      ? "bg-[#18181b] hover:bg-[#27272a] text-neutral-300 hover:text-white border-white/10"
+                      : "bg-purple-50 hover:bg-purple-100 text-purple-950 border-purple-200"
+                  }`}
                 >
                   Edit & resend
                 </button>
@@ -773,7 +841,11 @@ export function PaperPlaneContact({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border border-white/10 text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center"
+                    className={`py-2.5 px-3.5 rounded-xl border text-xs sm:text-sm font-medium transition-all active:scale-95 cursor-pointer text-center ${
+                      isDark
+                        ? "bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border-white/10"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                    }`}
                   >
                     Done
                   </button>
