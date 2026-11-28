@@ -54,7 +54,8 @@ export function MainPage({}: MainPageProps) {
       hotspot={0.85}
       followSpeed={0.75}
       clickBurst={true}
-      quality="high"
+      quality="medium"
+      maxDevicePixelRatio={1.5}
       theme={isDark ? "dark" : "light"}
       replaceSystemCursor={true}
       showCursorDot={true}

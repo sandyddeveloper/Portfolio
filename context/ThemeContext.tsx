@@ -13,20 +13,17 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function subscribeTheme(callback: () => void) {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
-  const handleMediaChange = () => callback();
+  const handleCustomChange = () => callback();
   const handleStorage = (e: StorageEvent) => {
     if (e.key === "portfolio-theme") callback();
   };
 
-  mediaQuery.addEventListener("change", handleMediaChange);
   window.addEventListener("storage", handleStorage);
-  window.addEventListener("portfolio-theme-change", handleMediaChange);
+  window.addEventListener("portfolio-theme-change", handleCustomChange);
 
   return () => {
-    mediaQuery.removeEventListener("change", handleMediaChange);
     window.removeEventListener("storage", handleStorage);
-    window.removeEventListener("portfolio-theme-change", handleMediaChange);
+    window.removeEventListener("portfolio-theme-change", handleCustomChange);
   };
 }
 
@@ -35,9 +32,6 @@ function getThemeSnapshot(): Theme {
     const stored = localStorage.getItem("portfolio-theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       return stored;
-    }
-    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-      return "light";
     }
   } catch {
     // Ignore storage errors

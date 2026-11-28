@@ -410,6 +410,8 @@ export function DeadpoolHero({ onBookNow, onExplore }: DeadpoolHeroProps) {
                   : "drop-shadow-[0_20px_45px_rgba(0,0,0,0.3)] drop-shadow-[0_0_40px_rgba(124,58,237,0.3)]"
               }`}
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </motion.div>
         </div>
