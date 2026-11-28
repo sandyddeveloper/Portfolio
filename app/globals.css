@@ -136,7 +136,14 @@
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, sans-serif !important;
 }
 
-/* Synchronized smooth theme transition applied briefly during Light/Dark toggle */
+/* GPU-composited View Transition for silky-smooth Light <-> Dark switching */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Fallback CSS transition for browsers without View Transitions API */
 html.theme-transitioning,
 html.theme-transitioning *,
 html.theme-transitioning *::before,
