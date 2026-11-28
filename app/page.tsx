@@ -29,6 +29,24 @@ export default function Home() {
   const [showAlertBox, setShowAlertBox] = useState<boolean>(true);
   const [loaderStarted, setLoaderStarted] = useState<boolean>(false);
 
+  // Preload all hero, about, and project images silently during the intro sequence
+  // so MainPage renders instantaneously with zero image pop-in
+  useEffect(() => {
+    const assetsToPreload = [
+      "/santhosh_hero.png",
+      "/about/backend.jpg",
+      "/about/developer.jpg",
+      "/about/workspace.jpg",
+      "/projects/fintech.jpg",
+      "/projects/cloud-infra.jpg",
+      "/projects/ai-agent.jpg",
+    ];
+    assetsToPreload.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }, []);
+
   // Handle user choice from top alert box (SOUND ON or MUTE)
   const handleAlertChoice = (enabled: boolean) => {
     setShowAlertBox(false);
@@ -125,7 +143,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#000000] overflow-x-hidden">
+    <div className="relative min-h-screen w-full bg-[#000000] overflow-x-clip">
       {/* Top alert box asking for sound choice using loading screen theme */}
       <AnimatePresence>
         {showAlertBox && appState === "LOADING" && (

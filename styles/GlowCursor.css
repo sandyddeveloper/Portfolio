@@ -1,8 +1,8 @@
 .glow-cursor {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: clip;
 }
 
 /* Replaces default system cursor across the main page container */

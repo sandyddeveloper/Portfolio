@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Theme = "dark" | "light";
 
@@ -13,20 +13,17 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function subscribeTheme(callback: () => void) {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
-  const handleMediaChange = () => callback();
+  const handleCustomChange = () => callback();
   const handleStorage = (e: StorageEvent) => {
     if (e.key === "portfolio-theme") callback();
   };
 
-  mediaQuery.addEventListener("change", handleMediaChange);
   window.addEventListener("storage", handleStorage);
-  window.addEventListener("portfolio-theme-change", handleMediaChange);
+  window.addEventListener("portfolio-theme-change", handleCustomChange);
 
   return () => {
-    mediaQuery.removeEventListener("change", handleMediaChange);
     window.removeEventListener("storage", handleStorage);
-    window.removeEventListener("portfolio-theme-change", handleMediaChange);
+    window.removeEventListener("portfolio-theme-change", handleCustomChange);
   };
 }
 
@@ -35,9 +32,6 @@ function getThemeSnapshot(): Theme {
     const stored = localStorage.getItem("portfolio-theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       return stored;
-    }
-    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-      return "light";
     }
   } catch {
     // Ignore storage errors
@@ -58,6 +52,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const [activeTheme, setActiveTheme] = useState<Theme | null>(null);
   const theme: Theme = activeTheme ?? currentTheme;
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const triggerSmoothTransition = () => {
+    const root = document.documentElement;
+    root.classList.add("theme-transitioning");
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+    }
+    transitionTimerRef.current = setTimeout(() => {
+      root.classList.remove("theme-transitioning");
+      transitionTimerRef.current = null;
+    }, 460);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -74,6 +89,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    triggerSmoothTransition();
     try {
       localStorage.setItem("portfolio-theme", nextTheme);
       window.dispatchEvent(new Event("portfolio-theme-change"));
@@ -84,6 +100,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setTheme = (newTheme: Theme) => {
+    triggerSmoothTransition();
     try {
       localStorage.setItem("portfolio-theme", newTheme);
       window.dispatchEvent(new Event("portfolio-theme-change"));
