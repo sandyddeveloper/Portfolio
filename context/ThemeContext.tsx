@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 
 type Theme = "dark" | "light";
 
@@ -87,27 +88,50 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme]);
 
+  const applyThemeWithTransition = (nextTheme: Theme) => {
+    const commit = () => {
+      try {
+        localStorage.setItem("portfolio-theme", nextTheme);
+        window.dispatchEvent(new Event("portfolio-theme-change"));
+      } catch {
+        // Ignore
+      }
+      setActiveTheme(nextTheme);
+    };
+
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => unknown;
+    };
+
+    if (typeof doc.startViewTransition === "function") {
+      doc.startViewTransition(() => {
+        flushSync(() => {
+          commit();
+          const root = document.documentElement;
+          if (nextTheme === "dark") {
+            root.classList.add("dark");
+            root.classList.remove("light");
+            root.setAttribute("data-theme", "dark");
+          } else {
+            root.classList.add("light");
+            root.classList.remove("dark");
+            root.setAttribute("data-theme", "light");
+          }
+        });
+      });
+    } else {
+      triggerSmoothTransition();
+      commit();
+    }
+  };
+
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "dark" ? "light" : "dark";
-    triggerSmoothTransition();
-    try {
-      localStorage.setItem("portfolio-theme", nextTheme);
-      window.dispatchEvent(new Event("portfolio-theme-change"));
-    } catch {
-      // Ignore
-    }
-    setActiveTheme(nextTheme);
+    applyThemeWithTransition(nextTheme);
   };
 
   const setTheme = (newTheme: Theme) => {
-    triggerSmoothTransition();
-    try {
-      localStorage.setItem("portfolio-theme", newTheme);
-      window.dispatchEvent(new Event("portfolio-theme-change"));
-    } catch {
-      // Ignore
-    }
-    setActiveTheme(newTheme);
+    applyThemeWithTransition(newTheme);
   };
 
   return (
