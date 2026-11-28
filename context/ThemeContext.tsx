@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Theme = "dark" | "light";
 
@@ -52,6 +52,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const [activeTheme, setActiveTheme] = useState<Theme | null>(null);
   const theme: Theme = activeTheme ?? currentTheme;
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const triggerSmoothTransition = () => {
+    const root = document.documentElement;
+    root.classList.add("theme-transitioning");
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+    }
+    transitionTimerRef.current = setTimeout(() => {
+      root.classList.remove("theme-transitioning");
+      transitionTimerRef.current = null;
+    }, 460);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -68,6 +89,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    triggerSmoothTransition();
     try {
       localStorage.setItem("portfolio-theme", nextTheme);
       window.dispatchEvent(new Event("portfolio-theme-change"));
@@ -78,6 +100,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setTheme = (newTheme: Theme) => {
+    triggerSmoothTransition();
     try {
       localStorage.setItem("portfolio-theme", newTheme);
       window.dispatchEvent(new Event("portfolio-theme-change"));

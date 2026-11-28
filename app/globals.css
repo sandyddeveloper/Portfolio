@@ -135,3 +135,13 @@
 .font-bebas {
   font-family: var(--font-bebas-neue), "Bebas Neue", Impact, sans-serif !important;
 }
+
+/* Synchronized smooth theme transition applied briefly during Light/Dark toggle */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow !important;
+  transition-duration: 420ms !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
